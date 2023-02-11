@@ -1,0 +1,251 @@
+.header {
+    min-width: 284px;
+    color: black;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.header_type_main {
+    background-color: #f3c1f8;
+}
+
+.header_type_movies {
+    background-color: white;
+}
+
+/*container*/
+.header__container {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    padding: 18px 0;
+}
+
+@media screen and (min-width: 320px){
+    .header__container {
+       width: 284px;
+    }
+}
+
+@media screen and (min-width: 568px){
+    .header__container {
+       width: 400px;
+    }
+}
+
+@media screen and (min-width: 620px){
+    .header__container {
+        width: 484px;
+    }
+}
+
+@media screen and (min-width: 768px){
+    .header__container {
+       width: 668px; 
+    }
+}
+
+@media screen and (min-width: 1024px){
+    .header__container {
+       width: 864px; 
+    }
+}
+
+@media screen and (min-width: 1280px){
+    .header__container {
+       width: 1114px; 
+    }
+}
+
+.header__container_type_main {
+    justify-content: space-between;
+
+}
+
+.header__container_type_movies {
+    justify-content: space-between;
+}
+
+/*links*/
+
+.header__links {
+    display: flex;
+}
+
+.header__links_type_main {
+    gap: 30px;
+    align-items: center;
+}
+
+/*nav*/
+
+.header__nav {
+    justify-content: center;
+    display: flex;
+    gap: 17px;
+}
+
+@media screen and (min-width: 320px) {
+    .header__nav {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .header__nav {
+        display: flex;
+        align-items: center;
+    }
+}
+
+/*logo*/
+
+.logo {
+    width: 38px;
+    height: 38px;
+}
+
+/*link*/
+
+.header__link {
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: right;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.header__link:hover {
+    opacity: 0.6;
+}
+
+@media screen and (min-width: 320px) {
+    .header__link {
+        font-size: 10px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .header__link {
+        font-size: 12px;
+    }
+}
+
+.header__link_type_signup {
+    color: black;
+}
+
+.header__link_type_signin {
+    background-color: black;
+    border-radius: 3px;
+    padding: 8px 20px;
+    color: white;
+    box-sizing: border-box;
+    transition: background-color 0.4s ease-in-out;
+}
+
+.header__link_type_signin:hover {
+    background-color: #f3c1f8;
+    color: black;
+    opacity: 1;
+}
+
+.header__nav-link {
+    font-weight: 400;
+    color: black;
+}
+
+.header__nav-link {
+    font-weight: 400;
+    color: black;
+}
+
+.header__nav-link_active {
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.header__link_type_profile {
+    color: black;
+}
+
+/*profile-container*/
+
+@media screen and (min-width: 320px) {
+    .header__profile-container {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .header__profile-container {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+    }
+}
+
+/*button*/
+
+/* .header__profile_btn {
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background-color: #F9F9F9;
+    border-radius: 4px;
+    background-image: url(../../images/profile_icon.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 30px;
+    width: 26px;
+} */
+
+/*nav-btn*/
+
+.header__nav-btn {
+    display: none;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.header__nav-btn:hover {
+    opacity: 0.6;
+}
+
+.header__nav-btn_type_main {
+    display: none;
+}
+
+.header__nav-btn_type_movies {
+    background-image: url(../../images/nav_btn.svg);
+    background-repeat: no-repeat;
+    width: 44px;
+    height: 44px;
+    background-position: center;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+    outline: none;
+}
+
+@media screen and (min-width: 320px) {
+    .header__nav-btn_type_movies {
+        display: inline;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .header__nav-btn_type_movies {
+        display: none;
+    }
+}
+
+/*icon*/
+
+.header__profile-icon {
+    background-color: rgba(249, 249, 249, 1);
+    padding: 8px 7.25px;
+    border-radius: 4px;
+}

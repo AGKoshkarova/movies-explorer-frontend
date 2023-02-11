@@ -1,0 +1,90 @@
+.notFound {
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+}
+/*title*/
+
+.notFound__title {
+    font-weight: 400;
+    padding: 0;
+    margin: 0 0 5px 0;
+}
+
+@media screen and (min-width: 320px) {
+    .notFound__title {
+        font-size: 80px;
+        
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .notFound__title {
+        font-size: 140px;
+    }
+}
+
+/*subtitle*/
+
+.notFound__subtitle {
+    padding: 0;
+    margin: 0;
+}
+
+@media screen and (min-width: 320px) {
+    .notFound__subtitle {
+        font-size: 12px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .notFound__subtitle {
+        font-size: 16px;
+    }
+}
+
+
+/*btn*/
+
+.notFound__btn {
+    position: absolute;
+    border: none;
+    left: 48%;
+    background-color: white;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.notFound__btn:hover {
+    opacity: 0.6;
+}
+
+@media screen and (min-width: 320px) {
+    .notFound__btn {
+        font-size: 12px;
+        bottom: 5%;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .notFound__btn {
+        font-size: 14px;
+        bottom: 20%;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .notFound__btn {
+        bottom: 60px;
+        bottom: 10%;
+        left: 49%;
+    }
+}
+

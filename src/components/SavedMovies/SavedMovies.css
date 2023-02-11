@@ -1,0 +1,39 @@
+.saved-movies {
+    margin: 0 auto;
+}
+
+@media screen and (min-width: 320px){
+    .saved-movies {
+       width: 284px;
+    }
+}
+
+@media screen and (min-width: 568px){
+    .saved-movies {
+        width: 400px;
+    }
+}
+
+@media screen and (min-width: 620px){
+    .saved-movies {
+        width: 484px;
+    }
+}
+
+@media screen and (min-width: 768px){
+    .saved-movies {
+       width: 708px; 
+    }
+}
+
+@media screen and (min-width: 1024px){
+    .saved-movies {
+       width: 864px; 
+    }
+}
+
+@media screen and (min-width: 1280px){
+    .saved-movies {
+       width: 1140px; 
+    }
+}

@@ -1,0 +1,87 @@
+@media screen and (min-width: 320px) {
+    .movie {
+        width: 300px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .movie {
+        width: 339px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .movie {
+        width: 270px;
+    }
+}
+
+
+/*container*/
+
+.movie__container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #E8E8E8;
+}
+
+/*name*/
+
+.movie__name {
+    color: black;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+}
+
+/*image*/
+
+.movie__image {
+    width: 100%;
+    object-fit: cover;
+}
+
+/*like-btn*/
+
+.movie__like-btn {
+    background: url(../../images/like.svg);
+    border: none;
+    outline: none;
+    align-self: center;
+    padding: 0;
+    margin: 0;
+    width: 24px;
+    height: 24px;
+    transition: opacity 0.5s ease-in-out;
+    cursor: pointer;
+}
+
+.movie__like-btn:hover {
+    opacity: 0.8;
+}
+
+.movie__like-btn_disabled {
+    background: url(../../images/no_like.svg);
+    border: none;
+    outline: none;
+    align-self: center;
+    padding: 0;
+    margin: 0;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.movie__like-btn_disabled:hover {
+    opacity: 0.8;
+}
+
+/*duration*/
+
+.movie__duration {
+    font-size: 11px;
+    line-height: 13px;
+    color: #A0A0A0;
+}
