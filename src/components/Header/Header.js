@@ -2,7 +2,6 @@
 // понадобятся на каждой из основных страниц
 import { Link, NavLink, useLocation } from "react-router-dom";
 
-import logo from "../../images/header_logo-min.svg";
 import profileIcon from "../../images/profile_icon.svg";
 
 function Header(props) {
@@ -16,7 +15,9 @@ function Header(props) {
 	const modifier = `${isLoggedIn ? "movies" : "main"}`;
 
 	const isActive = ({ isActive }) =>
-	isActive ? "header__link header__nav-link header__nav-link_active" : "header__link header__nav-link";
+		isActive
+			? "header__nav-link header__nav-link_active"
+			: "header__nav-link";
 
 	function handleNavigation() {
 		props.onNavigation(props);
@@ -25,7 +26,7 @@ function Header(props) {
 	return (
 		<header className={`header header_type_${modifier}`}>
 			<div className={`header__container header__container_type_${modifier}`}>
-				<img className="header__logo logo" src={logo} alt="logo"></img>
+				<Link to ='/' className="header__logo logo"></Link>
 				<button
 					className={`header__nav-btn header__nav-btn_type_${modifier}`}
 					type="button"
@@ -34,16 +35,10 @@ function Header(props) {
 
 				{isLoggedIn ? (
 					<nav className="header__nav">
-						<NavLink
-							to="/movies"
-							className={isActive}
-						>
+						<NavLink to="/movies" className={isActive}>
 							Фильмы
 						</NavLink>
-						<NavLink
-							to="/saved-movies"
-							className={isActive}
-						>
+						<NavLink to="/saved-movies" className={isActive}>
 							Сохранённые фильмы
 						</NavLink>
 					</nav>

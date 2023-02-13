@@ -16,6 +16,20 @@
     }
 }
 
+/*logo*/
+
+@media screen and (min-width: 320px) {
+    .auth__logo {
+        align-self: center;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .auth__logo {
+        align-self: flex-start;
+    }
+}
+
 /*title*/
 
 .auth__title {
@@ -28,12 +42,14 @@
 @media screen and (min-width: 320px) {
     .auth__title {
         margin: 50px 0 80px;
+        text-align: center;
     }
 }
 
 @media screen and (min-width: 768px) {
     .auth__title {
         margin: 40px 0;
+        text-align: left;
     }
 }
 
@@ -92,7 +108,7 @@
     transition: opacity 0.4s ease-in-out;
 }
 
-.auth__submit-btn_signup {
+.auth__submit-btn_type_signup {
     margin-top: 69px;
 }
 

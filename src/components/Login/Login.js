@@ -1,11 +1,10 @@
 // компонент страницы авторизации.
 import { Link } from "react-router-dom";
-import logo from "../../images/header_logo-min.svg";
 
 function Login() {
 	return (
 		<div className="auth">
-			<img className="auth__logo logo" src={logo} alt="лого"></img>
+			<Link to ='/' className="auth__logo logo"></Link>
 			<h2 className="auth__title">Рады видеть!</h2>
 			<form className="auth__form" name="signin">
 				<label className="auth__input-label">E-mail</label>
@@ -35,7 +34,7 @@ function Login() {
 				/>
 				<span className="auth__input-error password-input-error"></span>
 				<button
-					className="auth__submit-btn auth__submit-btn_signin auth__submit-btn_disabled"
+					className="auth__submit-btn auth__submit-btn_type_signin auth__submit-btn_disabled"
 					type="submit"
 					disabled=""
 				>

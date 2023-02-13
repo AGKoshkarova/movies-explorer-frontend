@@ -1,11 +1,10 @@
 // компонент страницы регистрации.
 import { Link } from "react-router-dom";
-import logo from "../../images/header_logo-min.svg";
 
 function Register() {
 	return (
 		<div className="auth">
-			<img className="auth__logo logo" src={logo} alt="лого"></img>
+			<Link to ='/' className="auth__logo logo"></Link>
 			<h2 className="auth__title">Добро пожаловать!</h2>
 			<form className="auth__form" name="signup">
 				<label className="auth__input-label">Имя</label>
@@ -47,7 +46,7 @@ function Register() {
 				/>
 				<span className="auth__input-error password-input-error"></span>
 				<button
-					className="auth__submit-btn auth__submit-btn_signup auth__submit-btn_disabled"
+					className="auth__submit-btn auth__submit-btn_type_signup auth__submit-btn_disabled"
 					type="submit"
 					disabled=""
 				>
