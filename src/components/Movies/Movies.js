@@ -7,23 +7,47 @@
 // Preloader — отвечает за работу прелоадера.
 // MoviesCardList — компонент, который управляет отрисовкой карточек фильмов на страницу и их количеством.
 // MoviesCard — компонент одной карточки фильма.
+import { useState, Suspense, lazy } from "react";
 
-import { movies } from "../../utils/movies";
+import { moviesApi } from "../../utils/MoviesApi";
 
-import MoviesCardList from "../MoviesCardList/MoviesCardList";
+// import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
+import Preloader from "../Preloader/Preloader";
 
-function Movies(props) {
+const MoviesCardList = lazy(() => import("../MoviesCardList/MoviesCardList"));
+
+function Movies() {
+	// состояние поискового запроса
+	const [searchTerm, setSearchTerm] = useState("");
+
+	// состояние результатов поиска
+	const [searchResults, setSearchResults] = useState([]);
+
+	// const [isRendered, setIsRendered] = useState(0);
+
+	// отрисовка найденных фильмов
+	function findMovies() {
+		moviesApi.getMovies().then((res) => {
+			const foundMovies = res.filter((movie) =>
+				(movie.nameRU || movie.nameEN).includes(searchTerm.toLowerCase())
+			);
+			setSearchResults(foundMovies);
+		});
+	}
 
 	return (
 		<div className="movies">
-			<SearchForm />
-			<MoviesCardList movies={movies}/>
-			<div className="movies__btn-container">
-				<button className="movies__button" type="button">Ещё</button>
-			</div>
+			<SearchForm
+				searchTerm={searchTerm}
+				onSubmit={findMovies}
+				onChange={setSearchTerm}
+			/>
+			<Suspense fallback={<Preloader />}>
+				<MoviesCardList movies={searchResults}/>
+			</Suspense>
 		</div>
 	);
-};
+}
 
 export default Movies;

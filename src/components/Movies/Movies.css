@@ -37,36 +37,3 @@
        width: 1140px; 
     }
 }
-
-/*btn-container*/
-
-.movies__btn-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-/*button*/
-
-.movies__button {
-    margin: 50px auto 80px;
-    padding: 0;
-    outline: none;
-    cursor: pointer;
-    box-sizing: border-box;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 15px;
-    letter-spacing: 0px;
-    text-align: center;
-    background-color: white;
-    border: 1px solid rgba(232, 232, 232, 1);
-    border-radius: 5px;
-    width: 320px;
-    height: 36px;
-    transition: opacity 0.4s ease-in-out;
-}
-
-.movies__button:hover {
-    opacity: 0.7;
-}

@@ -6,13 +6,11 @@
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
 
-import { savedMovies } from "../../utils/movies";
-
-function SavedMovies(props) {
+function SavedMovies() {
     return (
         <div className="saved-movies">
             <SearchForm />
-            <MoviesCardList movies={savedMovies}></MoviesCardList>
+            <MoviesCardList></MoviesCardList>
         </div>
     )
 };

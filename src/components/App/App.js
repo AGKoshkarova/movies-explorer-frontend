@@ -1,5 +1,5 @@
-import { Routes, Route } from "react-router-dom";
-import React, {useState} from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 
 import Main from "../Main/Main";
 
@@ -15,11 +15,55 @@ import Navigation from "../Navigation/Navigation";
 import Profile from "../Profile/Profile";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
 
-// custom hook to get the current pathname in React
+import { mainApi } from "../../utils/MainApi";
+
 
 function App() {
+	// стейт юзера
+	const [currentUser, setCurrentUser] = useState({});
 
+	// состояния открытия навигационного меню
 	const [isNavOpen, setIsNavOpen] = useState(false);
+
+	// состояние регитсрации
+	const [isRegistered, setIsRegistered] = useState(false);
+
+	// состояние логина
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+	//объект истории
+	const navigate = useNavigate();
+
+	//функция регистрации
+	const handleRegister = ({ name, email, password }) => {
+		mainApi
+			.register(name, email, password)
+			.then((res) => {
+				setIsRegistered(true);
+				setIsLoggedIn(false);
+				// navigate("/signin");
+				console.log(res);
+			})
+			.catch((err) => {
+				/* setIsInfoToolTipOpen(true); */
+				console.log(err);
+			});
+	};
+
+	const handleLogin = ({ email, password }) => {
+		mainApi
+			.login(email, password)
+			.then((res) => {
+				setIsLoggedIn(true);
+				//setEmail(email);
+				navigate("/movies");
+				console.log(res);
+			})
+			.catch((err) => {
+				//setIsInfoToolTipOpen(true);
+				console.log(err);
+			});
+	};
 
 	function handleNavClick() {
 		setIsNavOpen(!isNavOpen);
@@ -39,14 +83,25 @@ function App() {
 					<Route path="profile" element={<Profile />}></Route>
 				</Route>
 				<Route path="/" element={<AuthLayout />}>
-					<Route path="signup" element={<Register />}></Route>
-					<Route path="signin" element={<Login />}></Route>
-					<Route path="*" element={<NotFoundPage />}></Route>
-				</Route>
-			</Routes>
+						<Route
+							path="signup"
+							element={
+								<Register
+									isRegistered={isRegistered}
+									onRegister={handleRegister}
+								/>
+							}
+						></Route>
+						<Route
+							path="signin"
+							element={<Login isLoogedIn={isLoggedIn} onLogin={handleLogin} />}
+						></Route>
+						<Route path="*" element={<NotFoundPage />}></Route>
+					</Route>
+				</Routes>
 
-			<Navigation isOpen={isNavOpen} onClose={closeNav} />
-		</div>
+				<Navigation isOpen={isNavOpen} onClose={closeNav} />
+			</div>
 	);
 }
 

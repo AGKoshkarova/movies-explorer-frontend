@@ -3,7 +3,16 @@
 // Для него можно воспользоваться отдельным управляемым компонентом FilterCheckbox.
 import FilterCheckbox from "../FilterCheckBox/FilterCheckBox";
 
-function SearchForm() {
+function SearchForm(props) {
+
+	function handleSubmit(evt) {
+		evt.preventDefault();
+		props.onSubmit();
+	}
+
+	function handleChange(evt) {
+		props.onChange(evt.target.value);
+	}
 
 	return (
 		<div className="search-form">
@@ -11,6 +20,7 @@ function SearchForm() {
 				<form
 					className="search-form__form"
 					name="movies-form"
+					onSubmit={handleSubmit}
 				>
 					<input
 						className="search-form__input"
@@ -18,9 +28,10 @@ function SearchForm() {
 						type="text"
 						name="movie"
 						placeholder="Фильм"
-						/* value={movie || ""} */
+						value={props.searchTerm || ""}
 						autoComplete="off"
 						required
+						onChange={handleChange}
 					></input>
 					<button className="search-form__btn" type="submit"></button>
 				</form>

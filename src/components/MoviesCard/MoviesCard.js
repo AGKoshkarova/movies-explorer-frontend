@@ -1,24 +1,21 @@
 // компонент одной карточки фильма.
 function MoviesCard(props) {
 
-	const movieLikeButtonClassName = `${
-		props.isLiked === true ? "movie__like-btn" : "movie__like-btn_disabled"
-	  }`;
-
 	return (
 		<div className="movie">
-			<img className="movie__image" src={props.image} alt={props.name} />
+			<img className="movie__image" src={`https://api.nomoreparties.co/${props.image}`} alt={props.name} />
 			<div className="movie__container">
 				<h4 className="movie__name">{props.name}</h4>
 				<button
-					className={movieLikeButtonClassName}
+					/* className={movieLikeButtonClassName} */
+					className="movie__like-btn_disabled"
 					type="button"
 					aria-label="Нравится"
 				></button>
 			</div>
-			<p className="movie__duration">1ч 42м</p>
+			<p className="movie__duration">{props.duration}</p>
 		</div>
 	);
-}
+};
 
 export default MoviesCard;

@@ -93,6 +93,10 @@
     box-shadow: 1px 2px 10px black;
 }
 
+.auth__input:invalid {
+    color: rgba(255, 64, 98, 1);
+}
+
 /*submit-btn*/
 
 .auth__submit-btn {
@@ -114,6 +118,12 @@
 
 .auth__submit-btn:hover {
     opacity: 0.6;
+}
+
+.auth__submit-btn_disabled {
+    background-color: rgba(248, 248, 248, 1);
+    color: rgba(194, 194, 194, 1);
+    margin-top: 69px;
 }
 
 /**/
@@ -145,3 +155,20 @@
 .auth__link:hover {
     opacity: 0.5;
 }
+
+/*error*/
+
+.auth__error {
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 12px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(255, 64, 98, 1);
+    margin: -8px 0 5px;
+}
+
+.auth__error_type_password {
+    margin: 10px 0 0;
+}
+
