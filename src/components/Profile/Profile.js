@@ -18,9 +18,9 @@ function Profile(props) {
 		props.onEditProfile(values);
 	}
 
-	//const buttonClassName = isValid
-	//	? "profile__btn profile__btn_type_edit"
-	//	: "profile__btn_disabled";
+	const handleSignOut = () => {
+		props.onSignOut(props)
+	}
 
 	return (
 		<div className="profile">
@@ -61,6 +61,7 @@ function Profile(props) {
 					<button
 						className="profile__btn profile__btn_type_logout"
 						type="button"
+						onClick={handleSignOut}
 					>
 						Выйти из аккаунта
 					</button>

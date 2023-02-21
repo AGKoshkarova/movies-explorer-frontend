@@ -22,14 +22,14 @@ function SavedMovies(props) {
 	const [searchResults, setSearchResults] = useState([]);
 
 	// сохраненные фильмы
-	const [savedMovies, setSavedMovies] = useState(props.savedMovies);
+	// const [savedMovies, setSavedMovies] = useState(props.savedMovies);
 
     // состояние владения фильмом
     const [isSaved, setIsSaved] = useState("");
 
 	// поиск по сохраненным фильмам
 	const findSavedMovies = () => {
-		const foundMovies = savedMovies.filter((movie) =>
+		const foundMovies = props.savedMovies.filter((movie) =>
 			(movie.nameRU || movie.nameEN).includes(searchTerm.toLowerCase())
 		);
 		setSearchResults(foundMovies);
@@ -75,9 +75,8 @@ function SavedMovies(props) {
 		props.onDelete(movie);
 	};
 
-	console.log(savedMovies);
 
-	useEffect(() => {
+	/* useEffect(() => {
 		mainApi
 			.getSavedMovies()
 			.then((res) => {
@@ -86,7 +85,7 @@ function SavedMovies(props) {
 			.catch((err) => {
 				console.log(`Ошибка: ${err}`);
 			});
-	}, []);
+	}, []); */
 
 	return (
 		<div className="saved-movies">
@@ -96,7 +95,7 @@ function SavedMovies(props) {
 				onChange={setSearchTerm}
 			/>
 			<MoviesCardList
-				movies={savedMovies || searchResults}
+				movies={props.savedMovies || searchResults}
 				onDelete={handleDeleteMovie}
 			/>
 		</div>

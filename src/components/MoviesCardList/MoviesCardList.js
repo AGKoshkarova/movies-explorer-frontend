@@ -29,7 +29,7 @@ function MoviesCardList(props) {
 	const [numberOfMovies, setNumberOfMovies] = useState(0);
 
 	// состояние сохранения фильма
-	// const [isSaved, setIsSaved] = useState(false);
+	// const isSaved = props.isSaved;
 
 	const { width, isScreenM, isScreenL, isScreenXL } = useResize();
 
@@ -86,9 +86,10 @@ function MoviesCardList(props) {
 	};
 
 	// удаление фильма с нашего api
-	const handleDelete = (movie) => {
+	 const handleDelete = (movie) => {
 		props.onDelete(movie);
 	};
+
 	/* 
 	const saveMovie = (movie) => {
 		const isOwn =
@@ -156,6 +157,7 @@ function MoviesCardList(props) {
 								onDelete={handleDelete}
 								// owner={props.isSaved}
 								// owner={props.isSaved ? props.isSaved : null}
+								// isSaved={isSaved}
 							/>
 						</li>
 					);

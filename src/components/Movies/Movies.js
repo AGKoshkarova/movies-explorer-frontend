@@ -15,43 +15,47 @@ import { mainApi } from "../../utils/MainApi";
 // import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
 import Preloader from "../Preloader/Preloader";
+import MoviesCardList from "../MoviesCardList/MoviesCardList";
 
-const MoviesCardList = lazy(() => import("../MoviesCardList/MoviesCardList"));
+import { useLocalStorage } from "../../utils/useLocalStorage";
+
+//const MoviesCardList = lazy(() => import("../MoviesCardList/MoviesCardList"));
 
 function Movies(props) {
-	//const currentUser = useContext(CurrentUserContext);
-
 	// состояние поискового запроса
- 	const [searchTerm, setSearchTerm] = useState("");
+	/* 	const [searchTerm, setSearchTerm] = useState("");
 
-	// состояние результатов поиска
-	const [searchResults, setSearchResults] = useState([]);
+	// результат поиска или ранее найденные фильмы отображаемые при первой загрузке страницы
+	const [foundMovies, setFoundMovies] = useLocalStorage("movies", []);
 
 	// отрисовка найденных фильмов
- 	const findMovies = () => {
+	const findMovies = () => {
 		moviesApi.getMovies().then((res) => {
 			const foundMovies = res.filter((movie) =>
 				(movie.nameRU || movie.nameEN).includes(searchTerm.toLowerCase())
 			);
-			setSearchResults(foundMovies);
+			setFoundMovies(foundMovies);
 		});
+	}; */
+	const handleFindMovies = (searchTerm) => {
+		props.onFindMovies(searchTerm);
 	};
 
 	const handleMovieLike = (movie) => {
 		props.onChangeLike(movie);
 	};
 
+	
+
 
 	return (
 		<div className="movies">
-			<SearchForm
-				searchTerm={searchTerm}
-				onSubmit={findMovies}
-				onChange={setSearchTerm}
-			/>
-			<Suspense fallback={<Preloader />}>
-				<MoviesCardList movies={searchResults} onChangeLike={handleMovieLike} />
-			</Suspense>
+			<SearchForm onSubmit={handleFindMovies} />
+			{props.isLoading ? (
+				<Preloader />
+			) : (
+				<MoviesCardList movies={props.movies} onChangeLike={handleMovieLike} isSaved={props.isSaved}/>
+			)}
 		</div>
 	);
 }

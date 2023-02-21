@@ -39,6 +39,14 @@ class MainApi {
 		}).then(this._checkResponse());
 	}
 
+	logout() {
+		return fetch(`${this._url}/signout`, {
+			method: "GET",
+			credentials: "include",
+			headers: this._headers,
+		}).then(this._checkResponse());
+	}
+
 	getUserInfo() {
 		return fetch(`${this._url}/users/me`, {
 			method: "GET",
@@ -47,7 +55,7 @@ class MainApi {
 		}).then(this._checkResponse());
 	}
 
-	/* saveMovie(data) {
+	saveMovie(data) {
 		return fetch(`${this._url}/movies`, {
 			method: "POST",
 			credentials: "include",
@@ -66,7 +74,7 @@ class MainApi {
 				nameEN: data.nameEN,
 			}),
 		}).then(this._checkResponse());
-	} */
+	}
 
 	// сохраняем фильм на нашем api
 	changeUserInfo(data) {
@@ -96,7 +104,7 @@ class MainApi {
 		}).then(this._checkResponse());
 	}
 
-/* 	// меняем отображение кнопки лайка
+	/* 	// меняем отображение кнопки лайка
 	changeSavedStatus(id, action) {
 		return fetch(`${this._url}/movies/${id}`, {
 			method: `${!action ? "DELETE" : "POST"}`,
@@ -131,5 +139,5 @@ export const mainApi = new MainApi({
 	url: "https://api.diploma.koshkarova.nomoredomains.rocks",
 	headers: {
 		"content-type": "application/json",
-	}
+	},
 });

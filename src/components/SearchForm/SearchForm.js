@@ -2,17 +2,16 @@
 // Обратите внимание на фильтр с чекбоксом «Только короткометражки».
 // Для него можно воспользоваться отдельным управляемым компонентом FilterCheckbox.
 import FilterCheckbox from "../FilterCheckBox/FilterCheckBox";
+import { useFormWithValidation } from "../../utils/useFormValidation";
 
 function SearchForm(props) {
+	const { validation, values, handleChange, errors, isValid, resetForm } =
+		useFormWithValidation();
 
-	function handleSubmit(evt) {
+	const handleSubmit = (evt) => {
 		evt.preventDefault();
-		props.onSubmit();
-	}
-
-	function handleChange(evt) {
-		props.onChange(evt.target.value);
-	}
+		props.onSubmit(values);
+	};
 
 	return (
 		<div className="search-form">
@@ -28,12 +27,16 @@ function SearchForm(props) {
 						type="text"
 						name="movie"
 						placeholder="Фильм"
-						value={props.searchTerm || ""}
+						value={values.movie || ""}
 						autoComplete="off"
 						required
 						onChange={handleChange}
 					></input>
-					<button className="search-form__btn" type="submit"></button>
+					<button
+						className="search-form__btn"
+						type="submit"
+						disabled={isValid ? "" : true}
+					></button>
 				</form>
 			</div>
 			<FilterCheckbox />
