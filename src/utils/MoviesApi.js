@@ -24,10 +24,10 @@ class MoviesApi {
 
 
     // запрос на инфо о фильме с внешнего api => после чего сохраняем фильм уже на нашем api
-    saveMovie(id) {
+    getMovie(id) {
         return fetch(`${this._url}/${id}`, {
             method: 'GET',
-            credentials: 'include',
+            // credentials: 'include',
             headers: this._headers
         })
         .then(this._checkResponse())

@@ -12,7 +12,7 @@ export const useResize = () => {
 
 	const handleResize = () => setWidth(window.innerWidth);
 
-	console.log(width);
+	// console.log(width);
 
 	const handleTimeout = () => setTimeout(handleResize, 3000);
 

@@ -2,7 +2,11 @@
 // понадобятся на каждой из основных страниц
 import { Link, NavLink, useLocation } from "react-router-dom";
 
+
+
 import profileIcon from "../../images/profile_icon.svg";
+
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function Header(props) {
 	const location = useLocation();

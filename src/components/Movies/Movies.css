@@ -37,3 +37,8 @@
        width: 1140px; 
     }
 }
+
+.movies__result {
+    color: black;
+    text-align: center;
+}

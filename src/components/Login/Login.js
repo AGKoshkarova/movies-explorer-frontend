@@ -10,7 +10,7 @@ function Login(props) {
 
 	function handleSubmit(evt) {
 		evt.preventDefault();
-		props.onLogin(props);
+		props.onLogin(values);
 	}
 
 	const buttonClassName = isValid

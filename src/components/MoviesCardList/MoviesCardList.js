@@ -1,14 +1,23 @@
 // компонент, который управляет отрисовкой карточек фильмов на страницу
 // и их количеством
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useContext } from "react";
+
+import { useLocation } from "react-router";
 
 import MoviesCard from "../MoviesCard/MoviesCard";
 
 import { useResize } from "../../utils/useResize";
+import { moviesApi } from "../../utils/MoviesApi";
+import { mainApi } from "../../utils/MainApi";
+
+import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function MoviesCardList(props) {
-	// состояние отслеживания кол-ва нажатий на кнопку ещё
-	/* const [index, setIndex] = useState(0); */
+	// const currentUser = useContext(CurrentUserContext);
+	const location = useLocation();
+	const pathname = location.pathname;
+
+	const isOnSavedMovies = pathname === "/saved-movies";
 
 	// состояние кол-ва подгружаемых фильмов после сабмита
 	const [cardListSize, setCardListSize] = useState(0);
@@ -19,13 +28,13 @@ function MoviesCardList(props) {
 	// состояние кол-ва подгружаемых фильмов в ряд по кнопке "ещё"
 	const [numberOfMovies, setNumberOfMovies] = useState(0);
 
-	// кол-во фильмов подгружаемых после сабмита формы
-	//const initialMovies = props.movies.slice(0, indexOfMovies);
+	// состояние сохранения фильма
+	// const [isSaved, setIsSaved] = useState(false);
 
-	const {width, isScreenM, isScreenL, isScreenXL } = useResize();
+	const { width, isScreenM, isScreenL, isScreenXL } = useResize();
 
 	// массив отображаемых фильмов
-	const visibleMovies =  props.movies.slice(0, indexOfMovies);
+	const visibleMovies = props.movies.slice(0, indexOfMovies);
 
 	const handleCardListSize = useCallback(() => {
 		if (!isScreenM && !isScreenL && !isScreenXL) {
@@ -44,7 +53,7 @@ function MoviesCardList(props) {
 	}, [isScreenL, isScreenM, isScreenXL]);
 
 	// кол-во фильмов подгружаемых после сабмита формы
-/* 	const visibleMovies = useMemo(() => {
+	/* 	const visibleMovies = useMemo(() => {
 		if (indexOfMovies === 0) {
 			handleCardListSize();
 			return props.movies.slice(0, indexOfMovies);
@@ -53,8 +62,8 @@ function MoviesCardList(props) {
 		}
 	}, [indexOfMovies, props.movies, handleCardListSize]); */
 
-	console.log(visibleMovies);
-	console.log(indexOfMovies);
+	//console.log(visibleMovies);
+	//console.log(indexOfMovies);
 
 	// функция показа/скрытия кнопки "ещё
 	const buttonClassName =
@@ -62,14 +71,53 @@ function MoviesCardList(props) {
 			? "movies-card-list__button"
 			: "movies-card-list__button_disabled";
 
-	function getTimeFromMins(mins) {
+	const getTimeFromMins = (mins) => {
 		let hours = Math.trunc(mins / 60);
 		let minutes = mins % 60;
 		return hours + "ч " + minutes + "м";
-	}
+	};
 
 	// отрисовка фильмов по кнопке "Еще"
 	const findMoreMovies = () => setIndexOfMovies(numberOfMovies + indexOfMovies);
+
+	// сохранение фильма на апи
+	const handleChangeLike = (movie) => {
+		props.onChangeLike(movie);
+	};
+
+	// удаление фильма с нашего api
+	const handleDelete = (movie) => {
+		props.onDelete(movie);
+	};
+	/* 
+	const saveMovie = (movie) => {
+		const isOwn =
+			movie.owner._id === currentUser._id ||
+			movie.owner === currentUser._id;
+		
+		const savingMovie = visibleMovies.find(movie);
+		mainApi
+			.saveMovie(movie, !isOwn)
+			.then((res) => {
+				visibleMovies.push(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const deleteMovie = (movie) => {
+		const isOwn =
+			movie.owner._id === currentUser._id ||
+			movie.owner === currentUser._id;
+		
+		mainApi.deleteMovie(movie, isOwn)
+		.then((res) => {
+			setVisibleMovies((cards) =>
+					cards.filter((selectedCard) => selectedCard._id !== card.card._id)
+				);
+		})
+	}; */
 
 	useEffect(() => {
 		setIndexOfMovies(cardListSize);
@@ -95,11 +143,19 @@ function MoviesCardList(props) {
 			<ul className="movies-card-list">
 				{visibleMovies.map((movie) => {
 					return (
-						<li className="movies-card-list__element" key={movie.id}>
+						<li
+							className="movies-card-list__element"
+							key={movie.id || movie._id}
+						>
 							<MoviesCard
 								name={movie.nameRU}
-								image={movie.image.url}
+								image={isOnSavedMovies ? movie.image : movie.image.url}
 								duration={getTimeFromMins(movie.duration)}
+								movie={movie}
+								onChangeLike={handleChangeLike}
+								onDelete={handleDelete}
+								// owner={props.isSaved}
+								// owner={props.isSaved ? props.isSaved : null}
 							/>
 						</li>
 					);
