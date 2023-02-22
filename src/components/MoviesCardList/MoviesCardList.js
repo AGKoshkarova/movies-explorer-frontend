@@ -52,6 +52,9 @@ function MoviesCardList(props) {
 		}
 	}, [isScreenL, isScreenM, isScreenXL]);
 
+	// массив отображаемых фильмов
+	// const visibleMovies = props.movies.slice(0, indexOfMovies);
+
 	// кол-во фильмов подгружаемых после сабмита формы
 	/* 	const visibleMovies = useMemo(() => {
 		if (indexOfMovies === 0) {
@@ -81,8 +84,12 @@ function MoviesCardList(props) {
 	const findMoreMovies = () => setIndexOfMovies(numberOfMovies + indexOfMovies);
 
 	// сохранение фильма на апи
-	const handleChangeLike = (movie) => {
+	/* const handleChangeLike = (movie) => {
 		props.onChangeLike(movie);
+	}; */
+
+	const handleSaveMovie = (movie) => {
+		props.onSave(movie);
 	};
 
 	// удаление фильма с нашего api
@@ -90,6 +97,27 @@ function MoviesCardList(props) {
 		props.onDelete(movie);
 	};
 
+/*  	const handleCheckLikeStatus = () => {
+		const isSaved = props.savedMovies.some(
+			(movie) => movie.movieId === props.movies.movie.id
+		);
+
+		return isSaved;
+	};
+
+	const handleCheckLikeSavedStatus = () => {
+		const isSaved = props.savedMovies.some(
+			(movie) => movie.movieId === props.movie.id
+		);
+
+		return isSaved;
+	};
+
+	const isSaved = 
+	pathname !== "/saved-movies"
+		? handleCheckLikeStatus(props)
+		: handleCheckLikeSavedStatus(props); */
+ 
 	/* 
 	const saveMovie = (movie) => {
 		const isOwn =
@@ -146,18 +174,22 @@ function MoviesCardList(props) {
 					return (
 						<li
 							className="movies-card-list__element"
-							key={movie.id || movie._id}
+							key={ !isOnSavedMovies ? movie.id : '' }
 						>
 							<MoviesCard
 								name={movie.nameRU}
-								image={isOnSavedMovies ? movie.image : movie.image.url}
+								// image={isSaved ? `https://api.nomoreparties.co/${movie.image.url}` : movie.image}
 								duration={getTimeFromMins(movie.duration)}
 								movie={movie}
-								onChangeLike={handleChangeLike}
+								// onChangeLike={handleChangeLike}
+								onSave={handleSaveMovie}
 								onDelete={handleDelete}
 								// owner={props.isSaved}
 								// owner={props.isSaved ? props.isSaved : null}
 								// isSaved={isSaved}
+								//onCheckStatus={handleCheckLikeStatus}
+								//onCheckSavedStatus={handleCheckLikeSavedStatus}
+								savedMovies={props.savedMovies}
 							/>
 						</li>
 					);

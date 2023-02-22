@@ -16,24 +16,24 @@ function SavedMovies(props) {
 	// const currentUser = useContext(CurrentUserContext);
 
 	// состояние поискового запроса
-	const [searchTerm, setSearchTerm] = useState("");
+/* 	const [searchTerm, setSearchTerm] = useState("");
 
 	// состояние результатов поиска
-	const [searchResults, setSearchResults] = useState([]);
+	const [searchResults, setSearchResults] = useState([]); */
 
 	// сохраненные фильмы
 	// const [savedMovies, setSavedMovies] = useState(props.savedMovies);
 
     // состояние владения фильмом
-    const [isSaved, setIsSaved] = useState("");
+    // const [isSaved, setIsSaved] = useState("");
 
 	// поиск по сохраненным фильмам
-	const findSavedMovies = () => {
+/* 	const findSavedMovies = () => {
 		const foundMovies = props.savedMovies.filter((movie) =>
 			(movie.nameRU || movie.nameEN).includes(searchTerm.toLowerCase())
 		);
 		setSearchResults(foundMovies);
-	};
+	}; */
 /* 
 	const saveMovie = (movie) => {
 		const isSaved =
@@ -70,9 +70,17 @@ function SavedMovies(props) {
 			});
 	}; */
 
+	const handleFindSavedMovies = (searchTerm) => {
+		props.onFindSavedMovies(searchTerm);
+	};
+
 	// удаление фильма с нашего api
 	const handleDeleteMovie = (movie) => {
 		props.onDelete(movie);
+	};
+
+	const handleCheckLikeSavedStatus = (movie) => {
+		props.onCheckSavedStatus(movie);
 	};
 
 
@@ -90,13 +98,15 @@ function SavedMovies(props) {
 	return (
 		<div className="saved-movies">
 			<SearchForm
-				searchTerm={searchTerm}
-				onSubmit={findSavedMovies}
-				onChange={setSearchTerm}
+				// searchTerm={searchTerm}
+				onSubmit={handleFindSavedMovies}
+				// onChange={setSearchTerm}
 			/>
 			<MoviesCardList
-				movies={props.savedMovies || searchResults}
+				savedMovies={props.savedMovies}
+				movies={props.filteredMovies}
 				onDelete={handleDeleteMovie}
+				onCheckSavedStatus={handleCheckLikeSavedStatus}
 			/>
 		</div>
 	);

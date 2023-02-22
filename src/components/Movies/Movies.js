@@ -41,12 +41,21 @@ function Movies(props) {
 		props.onFindMovies(searchTerm);
 	};
 
-	const handleMovieLike = (movie) => {
-		props.onChangeLike(movie);
+	const handleCheckLikeStatus = (data) => {
+		props.onCheckStatus(data);
 	};
 
-	
+	/* const handleCheckLikeStatus = (movie) => {
+		props.onCheckLike(movie);
+	}; */
 
+	const handleSaveMovie = (movie) => {
+		props.onSave(movie)
+	}
+
+	const handleDeleteMovie = (movie) => {
+		props.onDelete(movie)
+	}
 
 	return (
 		<div className="movies">
@@ -54,7 +63,14 @@ function Movies(props) {
 			{props.isLoading ? (
 				<Preloader />
 			) : (
-				<MoviesCardList movies={props.movies} onChangeLike={handleMovieLike} isSaved={props.isSaved}/>
+				<MoviesCardList
+					movies={props.movies}
+					onCheckStatus={handleCheckLikeStatus}
+					// isSaved={props.isSaved}
+					onSave={handleSaveMovie}
+					savedMovies={props.savedMovies}
+					onDelete={handleDeleteMovie}
+				/>
 			)}
 		</div>
 	);
