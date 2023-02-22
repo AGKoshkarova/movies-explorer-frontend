@@ -256,7 +256,7 @@ function App() {
 			.then((res) => {
 				if (res) {
 					setIsLoggedIn(true);
-					navigate("/movies");
+					navigate("/saved-movies");
 				}
 			})
 			.catch((err) => console.log(`Ошибка: ${err}`));
@@ -329,7 +329,7 @@ function App() {
 								<ProtectedRoute isLoggedIn={isLoggedIn}>
 									<SavedMovies
 										onDelete={handleDeleteMovie}
-										savedMovies={savedMovies}
+										movies={savedMovies}
 										// movies={savedMovies}
 										onFindSavedMovies={findSavedMovies}
 										// onCheckSavedStatus={handleCheckLikeSavedStatus}

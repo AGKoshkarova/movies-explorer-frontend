@@ -103,8 +103,8 @@ function SavedMovies(props) {
 				// onChange={setSearchTerm}
 			/>
 			<MoviesCardList
-				savedMovies={props.savedMovies}
-				movies={props.filteredMovies}
+				// savedMovies={props.savedMovies}
+				movies={props.movies}
 				onDelete={handleDeleteMovie}
 				onCheckSavedStatus={handleCheckLikeSavedStatus}
 			/>

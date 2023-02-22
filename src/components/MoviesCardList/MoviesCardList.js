@@ -174,7 +174,7 @@ function MoviesCardList(props) {
 					return (
 						<li
 							className="movies-card-list__element"
-							key={ !isOnSavedMovies ? movie.id : '' }
+							key={ !isOnSavedMovies ? movie.id : movie._id }
 						>
 							<MoviesCard
 								name={movie.nameRU}
@@ -189,6 +189,7 @@ function MoviesCardList(props) {
 								// isSaved={isSaved}
 								//onCheckStatus={handleCheckLikeStatus}
 								//onCheckSavedStatus={handleCheckLikeSavedStatus}
+								movies={props.movies}
 								savedMovies={props.savedMovies}
 							/>
 						</li>

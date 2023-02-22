@@ -29,8 +29,8 @@ function MoviesCard(props) {
 	};
 
 	const handleCheckLikeSavedStatus = () => {
-		const isSaved = props.savedMovies.some(
-			(movie) => movie.movieId === props.movie.id
+		const isSaved = props.movies.some(
+			(movie) => movie.movieId === props.movie.movieId
 		);
 
 		return isSaved;
@@ -69,7 +69,11 @@ function MoviesCard(props) {
 		<div className="movie">
 			<img
 				className="movie__image"
-				src={`https://api.nomoreparties.co/${props.movie.image.url}`}
+				src={
+					!isOnSavedMovies
+						? `https://api.nomoreparties.co/${props.movie.image.url}`
+						: props.movie.image
+				}
 				alt={props.name}
 			/>
 			<div className="movie__container">
