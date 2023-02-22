@@ -12,7 +12,7 @@ export function BasicLayout(props) {
 
     return (
         <>
-            <Header onNavigation={handleHeader} />
+            <Header onNavigation={handleHeader} isLoggedIn={props.isLoggedIn}/>
             <Outlet />
             <Footer />
         </>

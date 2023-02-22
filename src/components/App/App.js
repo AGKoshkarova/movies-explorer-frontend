@@ -53,8 +53,10 @@ function App() {
 	const [filteredMovies, setFilteredMovies] = useLocalStorage("results", []);
 
 	// фильмы, отфильтрованные поиском
-	const [filteredSavedMovies, setFilteredSavedMovies] = useLocalStorage("savedResults", []);
-
+	const [filteredSavedMovies, setFilteredSavedMovies] = useLocalStorage(
+		"savedResults",
+		[]
+	);
 
 	// const [results, setResults] = useLocalStorage("results", filteredMovies);
 
@@ -71,7 +73,7 @@ function App() {
 			.then((res) => {
 				setIsRegistered(true);
 				setIsLoggedIn(false);
-				navigate("/signin");
+				navigate("/movies");
 				console.log(res);
 			})
 			.catch((err) => {
@@ -102,6 +104,7 @@ function App() {
 			.logout()
 			.then(() => {
 				setIsLoggedIn(false);
+				localStorage.clear();
 			})
 			.catch((err) => {
 				console.log(err);
@@ -134,12 +137,13 @@ function App() {
 		//});
 	};
 
+	console.log(currentUser);
+
 	// поиск по фильмам в зависимости от наличия данных в хранлилище
 	const findMovies = async (searchTerm) => {
 		const firstSearch = foundMovies.length <= 0;
 		if (firstSearch) {
 			const initialMovies = getAllMovies();
-			setFoundMovies(initialMovies);
 			setFilteredMovies(
 				initialMovies.filter((movie) =>
 					(movie.nameRU || movie.nameEN).includes(
@@ -203,10 +207,10 @@ function App() {
 		// const isSaved = data.movie.owner === currentUser._id;
 
 		mainApi
-			.deleteMovie(data.movie.id /* isSaved */)
+			.deleteMovie(data.movie._id /* isSaved */)
 			.then(() => {
 				setSavedMovies((movies) =>
-					movies.filter((movie) => movie.movieId !== data.movie.id)
+					movies.filter((movie) => movie.movieId !== data.movie._id)
 				);
 			})
 			.catch((error) => {
@@ -250,17 +254,18 @@ function App() {
 	}; */
 
 	// проверка наличия токена
-	const findToken = () => {
+
+	const findToken = useCallback(() => {
 		mainApi
 			.checkToken()
 			.then((res) => {
 				if (res) {
 					setIsLoggedIn(true);
-					navigate("/saved-movies");
+					// navigate("/movies");
 				}
 			})
-			.catch((err) => console.log(`Ошибка: ${err}`));
-	};
+			.catch((err) => console.log(`Ошибка: ${err}`))
+	}, []);
 
 	// установка данных о пользователе
 	useEffect(() => {
@@ -268,7 +273,7 @@ function App() {
 			mainApi
 				.getUserInfo()
 				.then((res) => {
-					setIsLoggedIn(true);
+					// setIsLoggedIn(true);
 					setCurrentUser(res);
 					// setEmail(res.email);
 					// navigate("/movies");
@@ -280,10 +285,18 @@ function App() {
 	//валидация токена
 	useEffect(() => {
 		findToken();
-	}, []);
+	}, [findToken, isLoggedIn]);
 
-	// отрисовка сохраненных фильмов
- 	useEffect(() => {
+	useEffect(() => {
+		if (isLoggedIn) {
+			mainApi.getSavedMovies().then((res) => {
+				setSavedMovies(res);
+			});
+		}
+	}, [isLoggedIn]);
+
+	/* 	// отрисовка сохраненных фильмов
+	useEffect(() => {
 		mainApi
 			.getSavedMovies()
 			.then((res) => {
@@ -292,12 +305,53 @@ function App() {
 			.catch((err) => {
 				console.log(err);
 			});
-	}, []);
+	}, []); */
 
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
 			<div className="page">
 				<Routes>
+					<Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
+						<Route
+							path="/"
+							element={
+								<BasicLayout
+									onNavOpen={handleNavClick}
+									isLoggedIn={isLoggedIn}
+								></BasicLayout>
+							}
+						>
+							<Route
+								path="movies"
+								element={
+									<Movies
+										isLoading={isLoading}
+										onSave={handleSaveMovie}
+										savedMovies={savedMovies}
+										movies={filteredMovies}
+										onFindMovies={findMovies}
+										notFound={notFound}
+										onDelete={handleDeleteMovie}
+									></Movies>
+								}
+							/>
+							<Route
+								path="saved-movies"
+								element={
+									<SavedMovies
+										onDelete={handleDeleteMovie}
+										movies={savedMovies}
+										onFindSavedMovies={findSavedMovies}
+									></SavedMovies>
+								}
+							/>
+							<Route
+								path="profile"
+								element={<Profile onSignOut={handleSignOut} />}
+							></Route>
+						</Route>
+					</Route>
+
 					<Route
 						path="/"
 						element={
@@ -305,47 +359,8 @@ function App() {
 						}
 					>
 						<Route index element={<Main />} />
-						<Route
-							path="movies"
-							element={
-								<ProtectedRoute isLoggedIn={isLoggedIn}>
-									<Movies
-										isLoading={isLoading}
-										onSave={handleSaveMovie}
-										// onChangeLike={handleMovieLike}
-										// onCheckStatus={handleCheckLikeStatus}
-										savedMovies={savedMovies}
-										movies={filteredMovies}
-										onFindMovies={findMovies}
-										notFound={notFound}
-										onDelete={handleDeleteMovie}
-									/>
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="saved-movies"
-							element={
-								<ProtectedRoute isLoggedIn={isLoggedIn}>
-									<SavedMovies
-										onDelete={handleDeleteMovie}
-										movies={savedMovies}
-										// movies={savedMovies}
-										onFindSavedMovies={findSavedMovies}
-										// onCheckSavedStatus={handleCheckLikeSavedStatus}
-									/>
-								</ProtectedRoute>
-							}
-						/>
-						<Route
-							path="profile"
-							element={
-								<ProtectedRoute isLoggedIn={isLoggedIn}>
-									<Profile onSignOut={handleSignOut} />
-								</ProtectedRoute>
-							}
-						/>
 					</Route>
+
 					<Route path="/" element={<AuthLayout />}>
 						<Route
 							path="signup"
@@ -353,18 +368,19 @@ function App() {
 								<Register
 									isRegistered={isRegistered}
 									onRegister={handleRegister}
-								/>
+								></Register>
 							}
 						/>
 						<Route
 							path="signin"
-							element={<Login isLoogedIn={isLoggedIn} onLogin={handleLogin} />}
+							element={<Login onLogin={handleLogin} isLoogedIn={isLoggedIn} />}
 						/>
-						<Route path="*" element={<NotFoundPage />} />
 					</Route>
+
+					<Route path="*" element={<NotFoundPage />}></Route>
 				</Routes>
 
-				<Navigation isOpen={isNavOpen} onClose={closeNav} />
+				<Navigation isOpen={isNavOpen} onClose={closeNav}></Navigation>
 			</div>
 		</CurrentUserContext.Provider>
 	);

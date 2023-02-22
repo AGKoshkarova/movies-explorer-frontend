@@ -9,14 +9,15 @@ import profileIcon from "../../images/profile_icon.svg";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function Header(props) {
-	const location = useLocation();
-	const pathname = location.pathname;
+/* 	 const location = useLocation();
+	 const pathname = location.pathname;
 
-	const isLoggedIn =
+	 const isLoggedIn =
 		pathname === "/movies" ||
-		(pathname === "/saved-movies") | (pathname === "/profile");
+		(pathname === "/saved-movies") | (pathname === "/profile");*/
 
-	const modifier = `${isLoggedIn ? "movies" : "main"}`;
+	const modifier = `${props.isLoggedIn ? "movies" : "main"}`;
+	// const headerOnLogin = props.isLoggedIn ? 
 
 	const isActive = ({ isActive }) =>
 		isActive
@@ -37,7 +38,7 @@ function Header(props) {
 					onClick={handleNavigation}
 				></button>
 
-				{isLoggedIn ? (
+				{props.isLoggedIn ? (
 					<nav className="header__nav">
 						<NavLink to="/movies" className={isActive}>
 							Фильмы
@@ -63,7 +64,7 @@ function Header(props) {
 					</div>
 				)}
 
-				{isLoggedIn ? (
+				{props.isLoggedIn ? (
 					<div className="header__profile-container">
 						<Link
 							to="/profile"
