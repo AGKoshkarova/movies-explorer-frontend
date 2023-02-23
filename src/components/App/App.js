@@ -15,6 +15,7 @@ import { BasicLayout, AuthLayout } from "../Layout/Layout";
 import Navigation from "../Navigation/Navigation";
 import Profile from "../Profile/Profile";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
+import Preloader from "../Preloader/Preloader";
 
 import { mainApi } from "../../utils/MainApi";
 
@@ -61,8 +62,11 @@ function App() {
 		"savedResults",
 		[]
 	);
-	// состояние загрузки страницы
+	// состояние загрузки прелодера
 	const [isLoading, setIsLoading] = useState(true)
+
+	// состояние загрузки главной страницы
+	// const [isPageLoading, setisPageLoading] = useState(true)
 
 	// const [results, setResults] = useLocalStorage("results", filteredMovies);
 
@@ -272,8 +276,7 @@ function App() {
             	if(res) {
 					setCurrentUser(res);
                 	setIsLoggedIn(true);
-					// setIsLoading(false);
-					// navigate('/movies')
+					//setIsLoading(false);
             	}
 			})
 			.catch((err) => console.log(`Ошибка: ${err}`))
@@ -286,7 +289,7 @@ function App() {
 			.then((res) => {
 				setIsLoggedIn(true);
 				setCurrentUser(res);
-				navigate(pathname);
+				// navigate(pathname);
 				setIsLoading(false);
 			})
 			.catch((err) => console.log(`Ошибка: ${err}`));
@@ -294,11 +297,10 @@ function App() {
 
 	useEffect(() => {
 		findToken();
-		// setIsLoading(false);
 	}, [])
 
 	// отрисовка сохраненных фильмов с сервера
-	useEffect(() => {
+ 	useEffect(() => {
 		if (isLoggedIn) {
 			mainApi.getSavedMovies().then(() => {
 				setSavedMovies((movies) =>
@@ -310,11 +312,15 @@ function App() {
 
 	console.log(savedMovies)
 
+	if (isLoading) {
+		return <Preloader isOpen={true} />
+	}
+
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
 			<div className="page">
 				<Routes>
-					<Route element={<ProtectedRoute isLoggedIn={isLoggedIn} isLoading={isLoading}/>}>
+					<Route element={<ProtectedRoute isLoggedIn={isLoggedIn}/>}>
 						<Route
 							path="/"
 							element={

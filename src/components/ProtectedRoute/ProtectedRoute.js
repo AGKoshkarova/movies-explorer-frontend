@@ -6,5 +6,5 @@ export default function ProtectedRoute(props) {
 	console.log("ProtectedRoute", props.isLoggedIn);
 	console.log("ProtectedRoute", props.isLoading);
 
-	return props.isLoading ? <Preloader isOpen={props.isLoading} /> : <Outlet />;
+	return props.isLoggedIn ? <Outlet /> : <Navigate to='/' />;
 }
