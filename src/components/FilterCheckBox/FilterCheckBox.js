@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 
-function FilterCheckbox() {
-	const [checked, setChecked] = useState(false);
-
-	function changeCheckbox() {
-		setChecked(!checked);
-	}
+function FilterCheckbox(props) {
 
 	return (
 		<div className="checkbox">
 			<input
 				className="checkbox__input"
 				type="checkbox"
-                id="movie-checkbox"
-                onChange={changeCheckbox}
-                checked={checked}
+                id={props.id}
+                onChange={evt => {props.setCheckedCheckBox(evt.target.checked)}}
+                checked={props.checkedCheckBox}
 			></input>
 			<label className="checkbox__label" htmlFor="movie-checkbox">
 			</label>

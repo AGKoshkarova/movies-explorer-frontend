@@ -12,7 +12,7 @@ function SearchForm(props) {
 	const { validation, values, handleChange, errors, isValid, resetForm } =
 		useFormWithValidation();
 
-	const [search, setSearch] = useLocalStorage('search', values);
+	// const [search, setSearch] = useLocalStorage("search", values);
 
 	const handleSubmit = (evt) => {
 		evt.preventDefault();
@@ -45,7 +45,11 @@ function SearchForm(props) {
 					></button>
 				</form>
 			</div>
-			<FilterCheckbox />
+			<FilterCheckbox
+				id="movies"
+				checkedCheckBox={props.checkedCheckBox}
+				setCheckedCheckBox={props.setCheckedCheckBox}
+			/>
 		</div>
 	);
 }

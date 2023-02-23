@@ -19,26 +19,16 @@ import MoviesCardList from "../MoviesCardList/MoviesCardList";
 
 import { useLocalStorage } from "../../utils/useLocalStorage";
 
-import BadResults from '../BadResults/BadResults';
+import BadResults from "../BadResults/BadResults";
 
 //const MoviesCardList = lazy(() => import("../MoviesCardList/MoviesCardList"));
 
 function Movies(props) {
-	// состояние поискового запроса
-	/* 	const [searchTerm, setSearchTerm] = useState("");
+	const [checkedCheckBox, setCheckedCheckBox] = useLocalStorage(
+		"searchMoviesChecked",
+		false
+	);
 
-	// результат поиска или ранее найденные фильмы отображаемые при первой загрузке страницы
-	const [foundMovies, setFoundMovies] = useLocalStorage("movies", []);
-
-	// отрисовка найденных фильмов
-	const findMovies = () => {
-		moviesApi.getMovies().then((res) => {
-			const foundMovies = res.filter((movie) =>
-				(movie.nameRU || movie.nameEN).includes(searchTerm.toLowerCase())
-			);
-			setFoundMovies(foundMovies);
-		});
-	}; */
 	const handleFindMovies = (searchTerm) => {
 		props.onFindMovies(searchTerm);
 	};
@@ -46,10 +36,6 @@ function Movies(props) {
 	const handleCheckLikeStatus = (data) => {
 		props.onCheckStatus(data);
 	};
-
-	/* const handleCheckLikeStatus = (movie) => {
-		props.onCheckLike(movie);
-	}; */
 
 	const handleSaveMovie = (movie) => {
 		props.onSave(movie);
@@ -61,18 +47,25 @@ function Movies(props) {
 
 	return (
 		<div className="movies">
-			<SearchForm onSubmit={handleFindMovies} />
+			<SearchForm
+				onSubmit={handleFindMovies}
+				checkedCheckBox={checkedCheckBox}
+				setCheckedCheckBox={setCheckedCheckBox}
+			/>
 			{/* 	{props.isLoading ? (
 				<Preloader />
 			) : ( */}
-			{props.notFound ? ( <BadResults />
+			{props.notFound ? (
+				<BadResults />
 			) : (
 				<MoviesCardList
 					movies={props.movies}
+					//movies={movies}
 					onCheckStatus={handleCheckLikeStatus}
 					onSave={handleSaveMovie}
 					savedMovies={props.savedMovies}
 					onDelete={handleDeleteMovie}
+					isChecked={checkedCheckBox}
 				/>
 			)}
 
