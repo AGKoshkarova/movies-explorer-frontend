@@ -263,6 +263,7 @@ function App() {
             .then((res) => {
             	if(res) {
                 	setIsLoggedIn(true);
+					navigate('/movies')
             	}
 			})
 			.catch((err) => console.log(`Ошибка: ${err}`))
