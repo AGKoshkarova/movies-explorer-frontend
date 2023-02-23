@@ -26,9 +26,11 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import { useLocalStorage } from "../../utils/useLocalStorage";
 import { moviesApi } from "../../utils/MoviesApi";
 
+import { findMovies } from "../../utils/findMovies";
+
 function App() {
 	// текущее расположение
-	const { pathname } = useLocation();
+	// const { pathname } = useLocation();
 
 	// стейт юзера
 	const [currentUser, setCurrentUser] = useState({});
@@ -41,9 +43,6 @@ function App() {
 
 	// состояние логина
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-	// состояние работы прелодера
-	// const [isPreloading, setIsPreloading] = useState(false);
 
 	// состояние нулевого резульата поиска
 	const [notFound, setNotFound] = useState(false);
@@ -63,15 +62,10 @@ function App() {
 		[]
 	);
 	// состояние загрузки прелодера
-	const [isLoading, setIsLoading] = useState(true)
+	const [isLoading, setIsLoading] = useState(true);
 
-	// состояние загрузки главной страницы
-	// const [isPageLoading, setisPageLoading] = useState(true)
-
-	// const [results, setResults] = useLocalStorage("results", filteredMovies);
-
-	// состояние сохранения фильма
-	// const [isSaved, setIsSaved] = useState(false);
+	// состояние загрузки прелодера во время запроса к серверу с фильмами
+	const [areMoviesLoading, setAreMoviesLoading] = useState(false);
 
 	//объект истории
 	const navigate = useNavigate();
@@ -81,7 +75,7 @@ function App() {
 		mainApi
 			.register(name, email, password)
 			.then((res) => {
-				if (res.ok) {
+				if (res) {
 					setIsRegistered(true);
 					handleLogin({ email, password });
 				}
@@ -114,7 +108,7 @@ function App() {
 			.logout()
 			.then(() => {
 				setIsLoggedIn(false);
-				navigate('/');
+				navigate("/");
 				localStorage.clear();
 			})
 			.catch((err) => {
@@ -136,75 +130,51 @@ function App() {
 		moviesApi
 			.getMovies()
 			.then((res) => {
+				setAreMoviesLoading(true);
 				setFoundMovies(res);
-				setIsLoading(true);
+				// setIsLoading(true);
 			})
 			.catch((err) => {
 				console.log(err);
-				setIsLoading(false);
+				// setIsLoading(false);
+			})
+			.finally(() => {
+				setAreMoviesLoading(false);
 			});
-		// .finally(() => {
-		//	setIsLoading(false);
-		//});
 	};
 
+	// console.log(foundMovies);
+
 	// поиск по фильмам в зависимости от наличия данных в хранлилище
-	const findMovies = async (searchTerm) => {
-		const firstSearch = foundMovies.length <= 0;
-		if (firstSearch) {
+	const handleFindMovies = (searchTerm) => {
+		if (foundMovies.length === 0) {
 			const initialMovies = getAllMovies();
-			setFilteredMovies(
-				initialMovies.filter((movie) =>
-					(movie.nameRU || movie.nameEN).includes(
-						searchTerm.movie.toLowerCase()
-					)
-				)
-			);
+			const movies = findMovies(initialMovies, searchTerm.movie);
+			if (movies.length === 0) {
+				setNotFound(true);
+			} else {
+				setFilteredMovies(movies);
+			}
 		} else {
-			setFilteredMovies(
-				foundMovies.filter((movie) =>
-					(movie.nameRU || movie.nameEN).includes(
-						searchTerm.movie.toLowerCase()
-					)
-				)
-			);
+			const movies = findMovies(foundMovies, searchTerm.movie);
+			if (movies.length === 0) {
+				setNotFound(true);
+			} else {
+				setFilteredMovies(movies);
+			}
 		}
 	};
 
-	//console.log(JSON.parse(localStorage.foundMovies));
-
 	// сохранение фильма
 	const handleSaveMovie = (data) => {
-		//const isSaved = data.owner !== null;
-		//const movie = { key: data.owner };
-		//const isSaved = movie.hasOwnProperty("key");
+		console.log(data);
 
 		mainApi
-			.saveMovie(data.movie /* !isSaved */)
-			/*.then((newMovie) => {
-			 	setSavedMovies(
-					(state) =>
-						state.map((movie) =>
-							movie.id === data.movie.id ? newMovie : movie
-						) // добавляем фильм в сохраненные
-				);
-			})
-			.then((newMovie) => {
-				setFoundMovies(
-					(state) =>
-						state.map((movie) =>
-							movie.id === data.movie.id ? newMovie : movie
-						) // обновляем фильм в хранилище, меняем состояние лайка
-				);
-			}) */
+			.saveMovie(data.movie)
+
 			.then((res) => {
-				setSavedMovies((movies) => [...movies, res]);
-				/* setFoundMovies(
-					() =>
-						foundMovies.map((movie) =>
-							movie.id === data.movie.id ? res : movie
-						) // добавляем фильм в сохраненные
-				); */
+				console.log("res:", res);
+				setSavedMovies((movies) => [...movies, res.newMovie]);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -213,13 +183,14 @@ function App() {
 
 	// удаление фильма на api
 	const handleDeleteMovie = (data) => {
-		// const isSaved = data.movie.owner === currentUser._id;
+		console.log(data);
 
 		mainApi
-			.deleteMovie(data.movie._id /* isSaved */)
-			.then(() => {
+			.deleteMovie(data._id)
+			.then((res) => {
+				console.log("response", res);
 				setSavedMovies((movies) =>
-					movies.filter((movie) => movie.movieId !== data.movie._id)
+					movies.filter((movie) => movie.movieId !== res.movieId)
 				);
 			})
 			.catch((error) => {
@@ -227,100 +198,67 @@ function App() {
 			});
 	};
 
+	// поиск по сохраненным фильмам
 	const findSavedMovies = (searchTerm) => {
-		const foundMovies = savedMovies.filter((movie) =>
-			(movie.nameRU || movie.nameEN).includes(searchTerm.toLowerCase())
-		);
-		setFilteredSavedMovies(foundMovies);
+		setFilteredSavedMovies(findMovies(foundMovies, searchTerm.movie));
 	};
 
-	/* const filterSavedMovies = () => {
-		mainApi.getSavedMovies().then(() => {
-			setSavedMovies((res) => {
-				//res.filter((movie) => movie.owner === currentUser._id)
-			});
-		});
-	} */
-
-	// управление функциями сохранения/удаления фильмов
-	/*  	const handleMovieLike = (data) => {
-		const isSaved = savedMovies.some(
-			(movie) => movie.movieId === data.movie.id
-		);
-		if (isSaved) {
-			handleSaveMovie(data);
-		} else {
-			handleDeleteMovie(data);
-		}
-
-		return isSaved;
-	};  */
-
-	/* 	const handleCheckLikeStatus = (data) => {
-		const isSaved = savedMovies.some(
-			(movie) => movie.movieId === data.id
-		);
-
-		return isSaved;
-	};
-
-	const handleCheckLikeSavedStatus = (data) => {
-		const isSaved = savedMovies.some((movie) => movie.movieId === data.movieId);
-
-		return isSaved;
-	}; */
-
-	const findToken = () => {
-        mainApi.checkToken()
-            .then((res) => {
-            	if(res) {
-					setCurrentUser(res);
-                	setIsLoggedIn(true);
-					//setIsLoading(false);
-            	}
+	// функция проверки токена
+	const findToken = useCallback(() => {
+		mainApi
+			.checkToken()
+			.then((response) => {
+				if (response) {
+					setCurrentUser(response);
+					setIsLoggedIn(true);
+				}
 			})
 			.catch((err) => console.log(`Ошибка: ${err}`))
-	}
+			.finally(() => setIsLoading(false));
+	}, []);
 
- 	// установка данных о пользователе
+	// установка данных о пользователе
 	useEffect(() => {
 		mainApi
 			.getUserInfo()
 			.then((res) => {
 				setIsLoggedIn(true);
 				setCurrentUser(res);
-				// navigate(pathname);
-				setIsLoading(false);
 			})
 			.catch((err) => console.log(`Ошибка: ${err}`));
 	}, []);
 
 	useEffect(() => {
 		findToken();
-	}, [])
+	}, [isLoggedIn]);
 
 	// отрисовка сохраненных фильмов с сервера
- 	useEffect(() => {
+	useEffect(() => {
+		console.log("currentUser._id:", currentUser._id);
+
 		if (isLoggedIn) {
-			mainApi.getSavedMovies().then(() => {
-				setSavedMovies((movies) =>
+			mainApi.getSavedMovies().then((movies) => {
+				setSavedMovies(
 					movies.filter((movie) => movie.owner === currentUser._id)
 				);
-			})
+			});
 		}
 	}, [isLoggedIn, currentUser._id]);
 
-	console.log(savedMovies)
-
+	// работа прелодера в зависимости от загружающихся данных
 	if (isLoading) {
-		return <Preloader isOpen={true} />
+		return <Preloader isOpen={true} />; // редирект
+	}
+
+	if (areMoviesLoading) {
+		return <Preloader isOpen={true} />; // запрос к серверу с фильмами
 	}
 
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
 			<div className="page">
 				<Routes>
-					<Route element={<ProtectedRoute isLoggedIn={isLoggedIn}/>}>
+					<Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
 						<Route
 							path="/"
 							element={
@@ -339,7 +277,7 @@ function App() {
 										onSave={handleSaveMovie}
 										savedMovies={savedMovies}
 										movies={filteredMovies}
-										onFindMovies={findMovies}
+										onFindMovies={handleFindMovies}
 										notFound={notFound}
 										onDelete={handleDeleteMovie}
 									></Movies>
@@ -351,6 +289,7 @@ function App() {
 									<SavedMovies
 										onDelete={handleDeleteMovie}
 										movies={savedMovies}
+										savedMovies={savedMovies}
 										onFindSavedMovies={findSavedMovies}
 									></SavedMovies>
 								}

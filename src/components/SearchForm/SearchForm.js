@@ -4,9 +4,15 @@
 import FilterCheckbox from "../FilterCheckBox/FilterCheckBox";
 import { useFormWithValidation } from "../../utils/useFormValidation";
 
+import { useLocalStorage } from "../../utils/useLocalStorage";
+
 function SearchForm(props) {
+	// const [search, setSearch] = useLocalStorage('search', values);
+
 	const { validation, values, handleChange, errors, isValid, resetForm } =
 		useFormWithValidation();
+
+	const [search, setSearch] = useLocalStorage('search', values);
 
 	const handleSubmit = (evt) => {
 		evt.preventDefault();

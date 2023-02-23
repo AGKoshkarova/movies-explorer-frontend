@@ -19,6 +19,8 @@ import MoviesCardList from "../MoviesCardList/MoviesCardList";
 
 import { useLocalStorage } from "../../utils/useLocalStorage";
 
+import BadResults from '../BadResults/BadResults';
+
 //const MoviesCardList = lazy(() => import("../MoviesCardList/MoviesCardList"));
 
 function Movies(props) {
@@ -50,28 +52,31 @@ function Movies(props) {
 	}; */
 
 	const handleSaveMovie = (movie) => {
-		props.onSave(movie)
-	}
+		props.onSave(movie);
+	};
 
 	const handleDeleteMovie = (movie) => {
-		props.onDelete(movie)
-	}
+		props.onDelete(movie);
+	};
 
 	return (
 		<div className="movies">
 			<SearchForm onSubmit={handleFindMovies} />
-			{props.isLoading ? (
+			{/* 	{props.isLoading ? (
 				<Preloader />
+			) : ( */}
+			{props.notFound ? ( <BadResults />
 			) : (
 				<MoviesCardList
 					movies={props.movies}
 					onCheckStatus={handleCheckLikeStatus}
-					// isSaved={props.isSaved}
 					onSave={handleSaveMovie}
 					savedMovies={props.savedMovies}
 					onDelete={handleDeleteMovie}
 				/>
 			)}
+
+			{/* )} */}
 		</div>
 	);
 }

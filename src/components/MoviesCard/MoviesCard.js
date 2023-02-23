@@ -9,17 +9,6 @@ function MoviesCard(props) {
 
 	const isOnSavedMovies = pathname === "/saved-movies";
 
-	// Определяем, являемся ли мы владельцем текущего фильма
-	// const isSaved = props.movie.owner ? true : false;
-
-	//const isSaved = props.savedMovies.some(
-	//	(movie) => movie.movieId === props.movie.id
-	//);
-	/*  	pathname !== "/saved-movies"
-	 		? props.onCheckStatus(props)
-	 		: props.onCheckSavedStatus(props); */
-
-	// const isSaved = props.onCheckStatus(props);
 	const handleCheckLikeStatus = () => {
 		const isSaved = props.savedMovies.some(
 			(movie) => movie.movieId === props.movie.id
@@ -28,18 +17,13 @@ function MoviesCard(props) {
 		return isSaved;
 	};
 
-	const handleCheckLikeSavedStatus = () => {
-		const isSaved = props.movies.some(
-			(movie) => movie.movieId === props.movie.movieId
-		);
+	console.log("handleCheckLikeStatus", handleCheckLikeStatus());
 
-		return isSaved;
-	};
+	const savedMovie = !isOnSavedMovies
+		? props.savedMovies.find((movie) => movie.movieId === props.movie.id)
+		: props.movie;
 
-	const isSaved =
-		pathname !== "/saved-movies"
-			? handleCheckLikeStatus(props)
-			: handleCheckLikeSavedStatus(props);
+	const isSaved = !isOnSavedMovies ? handleCheckLikeStatus() : true;
 
 	// Создаём переменную, которую после зададим в `className` для кнопки удаления
 	const movieLikeButtonClassName = `${
@@ -53,17 +37,19 @@ function MoviesCard(props) {
 
 	// удаление фильма с нашего api
 	const handleDeleteClick = () => {
-		props.onDelete(props);
+		props.onDelete(savedMovie);
 	};
 
 	// сохранение фильма на апи
-	const handleLikeСlick = () => {
+	const handleLikeClick = () => {
 		if (isSaved) {
 			handleDeleteClick();
 		} else if (!isSaved) {
 			handleSaveMovie();
 		}
 	};
+
+	console.log("isSaved:", isOnSavedMovies);
 
 	return (
 		<div className="movie">
@@ -80,11 +66,9 @@ function MoviesCard(props) {
 				<h4 className="movie__name">{props.name}</h4>
 				<button
 					className={movieLikeButtonClassName}
-					// className="movie__like-btn"
 					type="button"
 					aria-label="Нравится"
-					onClick={handleLikeСlick}
-					// onClick={handleLikeСlick}
+					onClick={handleLikeClick}
 				></button>
 			</div>
 			<p className="movie__duration">{props.duration}</p>

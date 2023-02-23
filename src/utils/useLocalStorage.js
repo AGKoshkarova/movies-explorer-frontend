@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-// Hook
+/* // Hook
 export function useLocalStorage(key, initialValue) {
 	// State to store our value
 	// Pass initial state function to useState so logic is only executed once
@@ -38,9 +38,9 @@ export function useLocalStorage(key, initialValue) {
 		}
 	};
 	return [storedValue, setValue];
-}
+} */
 
-export const useLocalStorage1 = (keyName, defaultValue) => {
+export const useLocalStorage = (keyName, defaultValue) => {
 	const [storedValue, setStoredValue] = useState(() => {
 	  try {
 		const value = window.localStorage.getItem(keyName);
