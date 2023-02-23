@@ -230,6 +230,14 @@ function App() {
 		setFilteredSavedMovies(foundMovies);
 	};
 
+	/* const filterSavedMovies = () => {
+		mainApi.getSavedMovies().then(() => {
+			setSavedMovies((res) => {
+				//res.filter((movie) => movie.owner === currentUser._id)
+			});
+		});
+	} */
+
 	// управление функциями сохранения/удаления фильмов
 	/*  	const handleMovieLike = (data) => {
 		const isSaved = savedMovies.some(
@@ -262,14 +270,16 @@ function App() {
         mainApi.checkToken()
             .then((res) => {
             	if(res) {
+					setCurrentUser(res);
                 	setIsLoggedIn(true);
-					navigate('/movies')
+					// setIsLoading(false);
+					// navigate('/movies')
             	}
 			})
 			.catch((err) => console.log(`Ошибка: ${err}`))
 	}
 
-	// установка данных о пользователе
+ 	// установка данных о пользователе
 	useEffect(() => {
 		mainApi
 			.getUserInfo()
@@ -290,11 +300,15 @@ function App() {
 	// отрисовка сохраненных фильмов с сервера
 	useEffect(() => {
 		if (isLoggedIn) {
-			mainApi.getSavedMovies().then((res) => {
-				setSavedMovies(res);
-			});
+			mainApi.getSavedMovies().then(() => {
+				setSavedMovies((movies) =>
+					movies.filter((movie) => movie.owner === currentUser._id)
+				);
+			})
 		}
-	}, [isLoggedIn]);
+	}, [isLoggedIn, currentUser._id]);
+
+	console.log(savedMovies)
 
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
