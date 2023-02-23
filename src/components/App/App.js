@@ -275,7 +275,7 @@ function App() {
 			.then((res) => {
 				setIsLoggedIn(true);
 				setCurrentUser(res);
-				// navigate(pathname);
+				navigate(pathname);
 				setIsLoading(false);
 			})
 			.catch((err) => console.log(`Ошибка: ${err}`));
