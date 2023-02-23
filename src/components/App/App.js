@@ -1,5 +1,6 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useLocation } from "react-router";
 
 import Main from "../Main/Main";
 
@@ -25,6 +26,9 @@ import { useLocalStorage } from "../../utils/useLocalStorage";
 import { moviesApi } from "../../utils/MoviesApi";
 
 function App() {
+	// текущее расположение
+	const { pathname } = useLocation();
+
 	// стейт юзера
 	const [currentUser, setCurrentUser] = useState({});
 
@@ -38,7 +42,7 @@ function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	// состояние работы прелодера
-	const [isLoading, setIsLoading] = useState(false);
+	// const [isPreloading, setIsPreloading] = useState(false);
 
 	// состояние нулевого резульата поиска
 	const [notFound, setNotFound] = useState(false);
@@ -57,6 +61,8 @@ function App() {
 		"savedResults",
 		[]
 	);
+	// состояние загрузки страницы
+	const [isLoading, setIsLoading] = useState(true)
 
 	// const [results, setResults] = useLocalStorage("results", filteredMovies);
 
@@ -71,10 +77,10 @@ function App() {
 		mainApi
 			.register(name, email, password)
 			.then((res) => {
-				setIsRegistered(true);
-				setIsLoggedIn(false);
-				navigate("/movies");
-				console.log(res);
+				if (res.ok) {
+					setIsRegistered(true);
+					handleLogin({ email, password });
+				}
 			})
 			.catch((err) => {
 				/* setIsInfoToolTipOpen(true); */
@@ -88,7 +94,7 @@ function App() {
 			.login(email, password)
 			.then((res) => {
 				setIsLoggedIn(true);
-				setCurrentUser(res);
+				// setCurrentUser(res);
 				navigate("/movies");
 				console.log(res);
 			})
@@ -104,6 +110,7 @@ function App() {
 			.logout()
 			.then(() => {
 				setIsLoggedIn(false);
+				navigate('/');
 				localStorage.clear();
 			})
 			.catch((err) => {
@@ -136,8 +143,6 @@ function App() {
 		//	setIsLoading(false);
 		//});
 	};
-
-	console.log(currentUser);
 
 	// поиск по фильмам в зависимости от наличия данных в хранлилище
 	const findMovies = async (searchTerm) => {
@@ -190,12 +195,12 @@ function App() {
 			}) */
 			.then((res) => {
 				setSavedMovies((movies) => [...movies, res]);
-				// setFilteredMovies(
-				//	() =>
-				//		filteredMovies.map((movie) =>
-				//			movie.id === data.movie.id ? res : movie
-				//		) // добавляем фильм в сохраненные
-				//);
+				/* setFoundMovies(
+					() =>
+						foundMovies.map((movie) =>
+							movie.id === data.movie.id ? res : movie
+						) // добавляем фильм в сохраненные
+				); */
 			})
 			.catch((err) => {
 				console.log(err);
@@ -253,40 +258,35 @@ function App() {
 		return isSaved;
 	}; */
 
-	// проверка наличия токена
-
-	const findToken = useCallback(() => {
-		mainApi
-			.checkToken()
-			.then((res) => {
-				if (res) {
-					setIsLoggedIn(true);
-					// navigate("/movies");
-				}
+	const findToken = () => {
+        mainApi.checkToken()
+            .then((res) => {
+            	if(res) {
+                	setIsLoggedIn(true);
+            	}
 			})
 			.catch((err) => console.log(`Ошибка: ${err}`))
-	}, []);
+	}
 
 	// установка данных о пользователе
 	useEffect(() => {
-		if (isLoggedIn) {
-			mainApi
-				.getUserInfo()
-				.then((res) => {
-					// setIsLoggedIn(true);
-					setCurrentUser(res);
-					// setEmail(res.email);
-					// navigate("/movies");
-				})
-				.catch((err) => console.log(`Ошибка: ${err}`));
-		}
-	}, [isLoggedIn]);
+		mainApi
+			.getUserInfo()
+			.then((res) => {
+				setIsLoggedIn(true);
+				setCurrentUser(res);
+				// navigate(pathname);
+				setIsLoading(false);
+			})
+			.catch((err) => console.log(`Ошибка: ${err}`));
+	}, []);
 
-	//валидация токена
 	useEffect(() => {
 		findToken();
-	}, [findToken, isLoggedIn]);
+		// setIsLoading(false);
+	}, [])
 
+	// отрисовка сохраненных фильмов с сервера
 	useEffect(() => {
 		if (isLoggedIn) {
 			mainApi.getSavedMovies().then((res) => {
@@ -295,29 +295,18 @@ function App() {
 		}
 	}, [isLoggedIn]);
 
-	/* 	// отрисовка сохраненных фильмов
-	useEffect(() => {
-		mainApi
-			.getSavedMovies()
-			.then((res) => {
-				setSavedMovies(res);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []); */
-
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
 			<div className="page">
 				<Routes>
-					<Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
+					<Route element={<ProtectedRoute isLoggedIn={isLoggedIn} isLoading={isLoading}/>}>
 						<Route
 							path="/"
 							element={
 								<BasicLayout
 									onNavOpen={handleNavClick}
 									isLoggedIn={isLoggedIn}
+									isLoading={isLoading}
 								></BasicLayout>
 							}
 						>

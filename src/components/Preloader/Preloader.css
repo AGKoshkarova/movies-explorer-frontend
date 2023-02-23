@@ -38,8 +38,11 @@
         transform: scale(1, 1);
     }
 }
-
 .preloader {
+    display: none;
+}
+
+.preloader_active {
     display: flex;
     align-items: center;
     justify-content: center;

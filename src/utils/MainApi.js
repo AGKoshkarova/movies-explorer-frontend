@@ -31,14 +31,6 @@ class MainApi {
 		}).then(this._checkResponse());
 	}
 
-	checkToken() {
-		return fetch(`${this._url}/users/me`, {
-			method: "GET",
-			credentials: "include",
-			headers: this._headers,
-		}).then(this._checkResponse());
-	}
-
 	logout() {
 		return fetch(`${this._url}/signout`, {
 			method: "GET",
@@ -133,6 +125,15 @@ class MainApi {
 			}),
 		}).then(this._checkResponse());
 	}
+
+	checkToken() {
+		return fetch(`${this._url}/users/me`, {
+			method: "GET",
+			credentials: "include",
+			headers: this._headers,
+		})
+			.then(this._checkResponse())
+	};
 }
 
 export const mainApi = new MainApi({

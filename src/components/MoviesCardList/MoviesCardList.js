@@ -13,6 +13,8 @@ import { mainApi } from "../../utils/MainApi";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function MoviesCardList(props) {
+
+	// console.log(props.movies);
 	// const currentUser = useContext(CurrentUserContext);
 	const location = useLocation();
 	const pathname = location.pathname;
