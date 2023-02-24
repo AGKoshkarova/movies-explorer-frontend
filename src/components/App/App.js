@@ -99,15 +99,14 @@ function App() {
 		mainApi
 			.logout()
 			.then(() => {
-				setIsLoggedIn(false);
+				localStorage.clear();
 				navigate("/");
+				setIsLoggedIn(false);
+				setFilteredMovies([])
 			})
 			.catch((err) => {
 				console.log(err);
 			})
-			.finally(() => {
-				localStorage.clear();
-			});
 	};
 
 	// редактирование данных о пользователе
