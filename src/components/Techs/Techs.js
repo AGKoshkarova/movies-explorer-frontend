@@ -1,5 +1,3 @@
-// компонент с использованными технологиями.
-
 function Techs() {
 	return (
 		<section className="techs" id="techs">

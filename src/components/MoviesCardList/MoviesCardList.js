@@ -1,16 +1,10 @@
-// компонент, который управляет отрисовкой карточек фильмов на страницу
-// и их количеством
-import { useState, useEffect, useMemo, useCallback, useContext } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { useLocation } from "react-router";
 
 import MoviesCard from "../MoviesCard/MoviesCard";
 
 import { useResize } from "../../utils/useResize";
-import { moviesApi } from "../../utils/MoviesApi";
-import { mainApi } from "../../utils/MainApi";
-
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function MoviesCardList(props) {
 	const location = useLocation();
@@ -29,8 +23,13 @@ function MoviesCardList(props) {
 
 	const { width, isScreenM, isScreenL, isScreenXL } = useResize();
 
+	// фильтрация короткометражек
+	const filteredMovies = props.movies.filter((movie) =>
+		props.isChecked ? movie.duration <= 40 : movie
+	);
+
 	// массив отображаемых фильмов
-	const visibleMovies = props.movies.slice(0, indexOfMovies);
+	const visibleMovies = filteredMovies.slice(0, indexOfMovies);
 
 	const handleCardListSize = useCallback(() => {
 		if (!isScreenM && !isScreenL && !isScreenXL) {
@@ -50,7 +49,7 @@ function MoviesCardList(props) {
 
 	// функция показа/скрытия кнопки "ещё
 	const buttonClassName =
-		props.movies.length > visibleMovies.length
+		filteredMovies.length > visibleMovies.length
 			? "movies-card-list__button"
 			: "movies-card-list__button_disabled";
 
@@ -80,26 +79,24 @@ function MoviesCardList(props) {
 	return (
 		<>
 			<ul className="movies-card-list">
-				{visibleMovies
-					.filter((movie) => (props.isChecked ? movie.duration <= 40 : movie))
-					.map((movie) => {
-						return (
-							<li
-								className="movies-card-list__element"
-								key={!isOnSavedMovies ? movie.id : movie._id}
-							>
-								<MoviesCard
-									name={movie.nameRU}
-									duration={getTimeFromMins(movie.duration)}
-									movie={movie}
-									onSave={handleSaveMovie}
-									onDelete={handleDelete}
-									movies={props.movies}
-									savedMovies={props.savedMovies}
-								/>
-							</li>
-						);
-					})}
+				{visibleMovies.map((movie) => {
+					return (
+						<li
+							className="movies-card-list__element"
+							key={!isOnSavedMovies ? movie.id : movie._id}
+						>
+							<MoviesCard
+								name={movie.nameRU}
+								duration={getTimeFromMins(movie.duration)}
+								movie={movie}
+								onSave={handleSaveMovie}
+								onDelete={handleDelete}
+								movies={props.movies}
+								savedMovies={props.savedMovies}
+							/>
+						</li>
+					);
+				})}
 			</ul>
 			<div className="movies-card-list__btn-container">
 				{props.movies.length > visibleMovies.length ? (

@@ -2,7 +2,6 @@
     background-color: #f3c1f8;
     margin: 0;
     padding: 0;
-    /*padding-top: 184px;*/
     color: black;
 }
 
@@ -52,6 +51,10 @@
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.promo__logo_type_loggedIn {
+    top: 50%;
 }
 
 @media screen and (min-width: 320px) {

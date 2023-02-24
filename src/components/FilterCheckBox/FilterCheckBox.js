@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 function FilterCheckbox(props) {
 
 	return (
@@ -11,7 +9,7 @@ function FilterCheckbox(props) {
                 onChange={evt => {props.setCheckedCheckBox(evt.target.checked)}}
                 checked={props.checkedCheckBox}
 			></input>
-			<label className="checkbox__label" htmlFor="movie-checkbox">
+			<label className="checkbox__label" htmlFor={props.id}>
 			</label>
             <p className="checkbox__title">Короткометражки</p>
 		</div>

@@ -1,21 +1,17 @@
-//компонент страницы с сохранёнными карточками фильмов. Пригодятся эти компоненты:
-
-//MoviesCardList — компонент, который управляет отрисовкой карточек фильмов на страницу и их количеством.
-// MoviesCard — компонент одной карточки фильма.
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
 
-import { moviesApi } from "../../utils/MoviesApi";
-import { mainApi } from "../../utils/MainApi";
-
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-
 function SavedMovies(props) {
+	const [checkedCheckBox, setCheckedCheckBox] = useState(false);
+
+	// состояние поиска фильмов
+	const [isFiltered, setIsFiltered] = useState(false);
 
 	const handleFindSavedMovies = (searchTerm) => {
 		props.onFindSavedMovies(searchTerm);
+		setIsFiltered(true);
 	};
 
 	// удаление фильма с нашего api
@@ -27,19 +23,25 @@ function SavedMovies(props) {
 		props.onCheckSavedStatus(movie);
 	};
 
+	useEffect(() => {
+		if (checkedCheckBox) {
+			props.savedMovies.filter((movie) => movie.duration <= 40);
+		}
+	});
 
 	return (
 		<div className="saved-movies">
 			<SearchForm
-				// searchTerm={searchTerm}
 				onSubmit={handleFindSavedMovies}
-				// onChange={setSearchTerm}
+				checkedCheckBox={checkedCheckBox}
+				setCheckedCheckBox={setCheckedCheckBox}
 			/>
 			<MoviesCardList
-				savedMovies={props.savedMovies}
-				movies={props.movies}
+				savedMovies={isFiltered ? props.filteredSavedMovies : props.savedMovies}
+				movies={isFiltered ? props.filteredSavedMovies : props.movies}
 				onDelete={handleDeleteMovie}
 				onCheckSavedStatus={handleCheckLikeSavedStatus}
+				isChecked={checkedCheckBox}
 			/>
 		</div>
 	);

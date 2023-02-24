@@ -1,25 +1,24 @@
-// компонент страницы авторизации.
 import { Link } from "react-router-dom";
 
 import { useFormWithValidation } from "../../utils/useFormValidation";
 
 function Login(props) {
-
-	const { validation, values, handleChange, errors, isValid, resetForm } =
-	useFormWithValidation();
-
-	function handleSubmit(evt) {
-		evt.preventDefault();
+	const formLogin = () => {
+		console.log("Callback function when form is submitted!");
+		console.log("Form Values ", values);
 		props.onLogin(values);
-	}
+	};
+
+	const { values, handleChange, errors, handleSubmit, isValid } =
+		useFormWithValidation(formLogin);
 
 	const buttonClassName = isValid
-	? "auth__submit-btn auth__submit-btn_type_signin"
-	: "auth__submit-btn auth__submit-btn_disabled";
+		? "auth__submit-btn auth__submit-btn_type_signin"
+		: "auth__submit-btn_type_signin_disabled";
 
 	return (
 		<div className="auth">
-			<Link to ='/' className="auth__logo logo"></Link>
+			<Link to="/" className="auth__logo logo"></Link>
 			<h2 className="auth__title">Рады видеть!</h2>
 			<form className="auth__form" name="signin" onSubmit={handleSubmit}>
 				<label className="auth__input-label">E-mail</label>
@@ -34,9 +33,11 @@ function Login(props) {
 					required
 					onChange={handleChange}
 				/>
-				<span className="auth__error auth__error_type_email">
-					{errors.email}
-				</span>
+				{errors.email && (
+					<span className="auth__error auth__error_type_email">
+						{errors.email}
+					</span>
+				)}
 				<label className="auth__input-label">Пароль</label>
 				<input
 					className="auth__input auth__input_invalid"
@@ -49,13 +50,15 @@ function Login(props) {
 					required
 					onChange={handleChange}
 				/>
-				<span className="auth__error auth__error_type_password">
-					{errors.password}
-				</span>
+				{errors.password && (
+					<span className="auth__error auth__error_type_password">
+						{errors.password}
+					</span>
+				)}
 				<button
 					className={buttonClassName}
 					type="submit"
-					disabled={isValid ? '' : true}
+					disabled={isValid ? "" : true}
 				>
 					Войти
 				</button>

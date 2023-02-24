@@ -1,19 +1,15 @@
-// компонент страницы регистрации.
-import { useState, useEffect } from "react";
-
 import { Link } from "react-router-dom";
 
 import { useFormWithValidation } from "../../utils/useFormValidation";
 
 function Register(props) {
-
-	const { validation, values, handleChange, errors, isValid, resetForm } =
-		useFormWithValidation();
-
-	function handleSubmit(evt) {
-		evt.preventDefault();
+	const handleFormRegister = () => {
+		console.log("Form Values ", values);
 		props.onRegister(values);
-	}
+	};
+
+	const { values, handleChange, errors, handleSubmit, isValid } =
+		useFormWithValidation(handleFormRegister);
 
 	const buttonClassName = isValid
 		? "auth__submit-btn auth__submit-btn_type_signup"
@@ -41,9 +37,11 @@ function Register(props) {
 					required
 					onChange={handleChange}
 				/>
-				<span className="auth__error auth__error_type_name">
-					{errors.name}
-				</span>
+				{errors.name && (
+					<span className="auth__error auth__error_type_name">
+						{errors.name}
+					</span>
+				)}
 				<label className="auth__input-label">E-mail</label>
 				<input
 					className="auth__input auth__input_invalid"
@@ -56,9 +54,11 @@ function Register(props) {
 					required
 					onChange={handleChange}
 				/>
-				<span className="auth__error auth__error_type_email">
-					{errors.email}
-				</span>
+				{errors.email && (
+					<span className="auth__error auth__error_type_email">
+						{errors.email}
+					</span>
+				)}
 				<label className="auth__input-label">Пароль</label>
 				<input
 					className="auth__input auth__input_invalid"
@@ -71,10 +71,16 @@ function Register(props) {
 					required
 					onChange={handleChange}
 				/>
-				<span className="auth__error auth__error_type_password">
-					{errors.password}
-				</span>
-				<button className={buttonClassName} type="submit" disabled={isValid ? '' : true}>
+				{errors.password && (
+					<span className="auth__error auth__error_type_password">
+						{errors.password}
+					</span>
+				)}
+				<button
+					className={buttonClassName}
+					type="submit"
+					disabled={isValid ? "" : true}
+				>
 					Зарегистрироваться
 				</button>
 			</form>

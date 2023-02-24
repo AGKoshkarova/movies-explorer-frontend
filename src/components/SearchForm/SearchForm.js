@@ -2,21 +2,44 @@
 // Обратите внимание на фильтр с чекбоксом «Только короткометражки».
 // Для него можно воспользоваться отдельным управляемым компонентом FilterCheckbox.
 import FilterCheckbox from "../FilterCheckBox/FilterCheckBox";
-import { useFormWithValidation } from "../../utils/useFormValidation";
 
 import { useLocalStorage } from "../../utils/useLocalStorage";
 
+import { useState } from "react";
+
+import { useLocation } from "react-router-dom";
+
 function SearchForm(props) {
-	// const [search, setSearch] = useLocalStorage('search', values);
+	const location = useLocation();
+	const pathname = location.pathname;
 
-	const { validation, values, handleChange, errors, isValid, resetForm } =
-		useFormWithValidation();
+	const isOnSavedMovies = pathname === "/saved-movies";
 
-	// const [search, setSearch] = useLocalStorage("search", values);
+	// инпут Movies
+	const [searchInputMovies, setSearchInputMovies] = useLocalStorage(
+		"searchInput",
+		""
+	);
 
-	const handleSubmit = (evt) => {
+	// инпут SavedMovies
+	const [searchInputSavedMovies, setSearchInputSavedMovies] = useState("");
+
+	const handleSavedMoviesSubmit = (evt) => {
 		evt.preventDefault();
-		props.onSubmit(values);
+		props.onSubmit(searchInputSavedMovies);
+	};
+
+	const handleMoviesSubmit = (evt) => {
+		evt.preventDefault();
+		props.onSubmit(searchInputMovies);
+	};
+
+	const handleInputMoviesChange = (evt) => {
+		setSearchInputMovies(evt.target.value);
+	};
+
+	const handleInputSavedMoviesChange = (evt) => {
+		setSearchInputSavedMovies(evt.target.value);
 	};
 
 	return (
@@ -25,7 +48,9 @@ function SearchForm(props) {
 				<form
 					className="search-form__form"
 					name="movies-form"
-					onSubmit={handleSubmit}
+					onSubmit={
+						isOnSavedMovies ? handleSavedMoviesSubmit : handleMoviesSubmit
+					}
 				>
 					<input
 						className="search-form__input"
@@ -33,20 +58,22 @@ function SearchForm(props) {
 						type="text"
 						name="movie"
 						placeholder="Фильм"
-						value={values.movie || ""}
+						value={
+							isOnSavedMovies ? searchInputSavedMovies : searchInputMovies || ""
+						}
 						autoComplete="off"
 						required
-						onChange={handleChange}
+						onChange={
+							isOnSavedMovies
+								? handleInputSavedMoviesChange
+								: handleInputMoviesChange
+						}
 					></input>
-					<button
-						className="search-form__btn"
-						type="submit"
-						disabled={isValid ? "" : true}
-					></button>
+					<button className="search-form__btn" type="submit"></button>
 				</form>
 			</div>
 			<FilterCheckbox
-				id="movies"
+				id={pathname === "/movies" ? "movies" : "saved-movies"}
 				checkedCheckBox={props.checkedCheckBox}
 				setCheckedCheckBox={props.setCheckedCheckBox}
 			/>

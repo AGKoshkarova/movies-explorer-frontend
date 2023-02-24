@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
 	SCREEN_SMALL,
 	SCREEN_SMALL_M,
@@ -11,8 +11,6 @@ export const useResize = () => {
 	const [width, setWidth] = useState(window.innerWidth);
 
 	const handleResize = () => setWidth(window.innerWidth);
-
-	// console.log(width);
 
 	const handleTimeout = () => setTimeout(handleResize, 3000);
 

@@ -1,4 +1,3 @@
-// компонент с информацией о студенте.
 import React from "react";
 
 import myPhoto from "../../images/me.jpg";

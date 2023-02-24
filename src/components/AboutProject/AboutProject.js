@@ -1,5 +1,3 @@
-// компонент с описанием дипломного проекта
-
 function AboutProject() {
 	return (
 		<section className="about-project" id="about-project">

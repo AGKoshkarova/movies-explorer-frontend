@@ -96,44 +96,13 @@ class MainApi {
 		}).then(this._checkResponse());
 	}
 
-	/* 	// меняем отображение кнопки лайка
-	changeSavedStatus(id, action) {
-		return fetch(`${this._url}/movies/${id}`, {
-			method: `${!action ? "DELETE" : "POST"}`,
-			credentials: "include",
-			headers: this._headers,
-		}).then(this._checkResponse());
-	} */
-
-	changeSavedStatus(data, action) {
-		return fetch(`${this._url}/movies`, {
-			method: `${!action ? "DELETE" : "POST"}`,
-			credentials: "include",
-			headers: this._headers,
-			body: JSON.stringify({
-				country: data.country,
-				director: data.director,
-				duration: data.duration,
-				year: data.year,
-				description: data.description,
-				image: `https://api.nomoreparties.co/${data.image.url}`,
-				trailerLink: data.trailerLink,
-				thumbnail: `https://api.nomoreparties.co/${data.image.formats.thumbnail.url}`,
-				movieId: data.id,
-				nameRU: data.nameRU,
-				nameEN: data.nameEN,
-			}),
-		}).then(this._checkResponse());
-	}
-
 	checkToken() {
 		return fetch(`${this._url}/users/me`, {
 			method: "GET",
 			credentials: "include",
 			headers: this._headers,
-		})
-			.then(this._checkResponse())
-	};
+		}).then(this._checkResponse());
+	}
 }
 
 export const mainApi = new MainApi({

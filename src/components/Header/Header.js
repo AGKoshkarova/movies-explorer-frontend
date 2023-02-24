@@ -1,39 +1,32 @@
-// компонент, который отрисовывает шапку сайта на страницу.
-// понадобятся на каждой из основных страниц
 import { Link, NavLink, useLocation } from "react-router-dom";
-
-
 
 import profileIcon from "../../images/profile_icon.svg";
 
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
-
 function Header(props) {
-/* 	 const location = useLocation();
-	 const pathname = location.pathname;
+	const location = useLocation();
+	const pathname = location.pathname;
 
-	 const isLoggedIn =
-		pathname === "/movies" ||
-		(pathname === "/saved-movies") | (pathname === "/profile");*/
+	const isOnMain = pathname === "/";
 
 	const modifier = `${props.isLoggedIn ? "movies" : "main"}`;
-	// const headerOnLogin = props.isLoggedIn ? 
+
+	const loggedInModifier = `${
+		props.isLoggedIn && isOnMain ? "main-loggedIn" : modifier
+	}`;
 
 	const isActive = ({ isActive }) =>
-		isActive
-			? "header__nav-link header__nav-link_active"
-			: "header__nav-link";
+		isActive ? "header__nav-link header__nav-link_active" : "header__nav-link";
 
-	function handleNavigation() {
+	const handleNavigation = () => {
 		props.onNavigation(props);
-	}
+	};
 
 	return (
-		<header className={`header header_type_${modifier}`}>
+		<header className={`header header_type_${loggedInModifier}`}>
 			<div className={`header__container header__container_type_${modifier}`}>
-				<Link to ='/' className="header__logo logo"></Link>
+				<Link to="/" className="header__logo logo"></Link>
 				<button
-					className={`header__nav-btn header__nav-btn_type_${modifier}`}
+					className={`header__nav-btn header__nav-btn_type_${loggedInModifier}`}
 					type="button"
 					onClick={handleNavigation}
 				></button>
@@ -73,7 +66,7 @@ function Header(props) {
 							Аккаунт
 						</Link>
 						<img
-							className="header__profile-icon"
+							className={`header__profile-icon header__profile-icon_type_${loggedInModifier}`}
 							src={profileIcon}
 							alt="Иконка"
 						></img>

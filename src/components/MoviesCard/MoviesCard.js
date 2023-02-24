@@ -1,7 +1,4 @@
-// компонент одной карточки фильма.
-import { useContext } from "react";
 import { useLocation } from "react-router";
-import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 function MoviesCard(props) {
 	const location = useLocation();
@@ -17,15 +14,12 @@ function MoviesCard(props) {
 		return isSaved;
 	};
 
-	console.log("handleCheckLikeStatus", handleCheckLikeStatus());
-
 	const savedMovie = !isOnSavedMovies
 		? props.savedMovies.find((movie) => movie.movieId === props.movie.id)
 		: props.movie;
 
 	const isSaved = !isOnSavedMovies ? handleCheckLikeStatus() : true;
 
-	// Создаём переменную, которую после зададим в `className` для кнопки удаления
 	const movieLikeButtonClassName = `${
 		isSaved ? "movie__like-btn" : "movie__like-btn_disabled"
 	}`;
@@ -48,8 +42,6 @@ function MoviesCard(props) {
 			handleSaveMovie();
 		}
 	};
-
-	console.log("isSaved:", isOnSavedMovies);
 
 	return (
 		<div className="movie">

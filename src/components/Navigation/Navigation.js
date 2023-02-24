@@ -1,6 +1,3 @@
-// компонент, который отвечает за меню навигации на сайте.
-// понадобятся на каждой из основных страниц
-
 import { NavLink, Link } from "react-router-dom";
 
 import profileIcon from "../../images/profile_icon.svg";

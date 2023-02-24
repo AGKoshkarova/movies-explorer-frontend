@@ -1,27 +1,11 @@
-// компонент страницы с поиском по фильмам. В нём пригодятся эти компоненты:
+import { useEffect } from "react";
 
-// SearchForm — форма поиска, куда пользователь будет вводить запрос.
-// Обратите внимание на фильтр с чекбоксом «Только короткометражки».
-// Для него можно воспользоваться отдельным управляемым компонентом FilterCheckbox.
-
-// Preloader — отвечает за работу прелоадера.
-// MoviesCardList — компонент, который управляет отрисовкой карточек фильмов на страницу и их количеством.
-// MoviesCard — компонент одной карточки фильма.
-import { useState, Suspense, lazy, useContext, useEffect } from "react";
-
-import { moviesApi } from "../../utils/MoviesApi";
-import { mainApi } from "../../utils/MainApi";
-
-// import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
-import Preloader from "../Preloader/Preloader";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 
 import { useLocalStorage } from "../../utils/useLocalStorage";
 
 import BadResults from "../BadResults/BadResults";
-
-//const MoviesCardList = lazy(() => import("../MoviesCardList/MoviesCardList"));
 
 function Movies(props) {
 	const [checkedCheckBox, setCheckedCheckBox] = useLocalStorage(
@@ -45,6 +29,12 @@ function Movies(props) {
 		props.onDelete(movie);
 	};
 
+	useEffect(() => {
+		if (checkedCheckBox) {
+			props.movies.filter((movie) => movie.duration <= 40);
+		}
+	});
+
 	return (
 		<div className="movies">
 			<SearchForm
@@ -52,15 +42,11 @@ function Movies(props) {
 				checkedCheckBox={checkedCheckBox}
 				setCheckedCheckBox={setCheckedCheckBox}
 			/>
-			{/* 	{props.isLoading ? (
-				<Preloader />
-			) : ( */}
 			{props.notFound ? (
 				<BadResults />
 			) : (
 				<MoviesCardList
 					movies={props.movies}
-					//movies={movies}
 					onCheckStatus={handleCheckLikeStatus}
 					onSave={handleSaveMovie}
 					savedMovies={props.savedMovies}
@@ -68,8 +54,6 @@ function Movies(props) {
 					isChecked={checkedCheckBox}
 				/>
 			)}
-
-			{/* )} */}
 		</div>
 	);
 }

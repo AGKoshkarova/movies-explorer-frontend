@@ -1,6 +1,5 @@
 import { Routes, Route, useNavigate } from "react-router-dom";
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useLocation } from "react-router";
+import React, { useState, useEffect, useCallback } from "react";
 
 import Main from "../Main/Main";
 
@@ -29,9 +28,6 @@ import { moviesApi } from "../../utils/MoviesApi";
 import { findMovies } from "../../utils/findMovies";
 
 function App() {
-	// текущее расположение
-	// const { pathname } = useLocation();
-
 	// стейт юзера
 	const [currentUser, setCurrentUser] = useState({});
 
@@ -57,10 +53,8 @@ function App() {
 	const [filteredMovies, setFilteredMovies] = useLocalStorage("results", []);
 
 	// фильмы, отфильтрованные поиском
-	const [filteredSavedMovies, setFilteredSavedMovies] = useLocalStorage(
-		"savedResults",
-		[]
-	);
+	const [filteredSavedMovies, setFilteredSavedMovies] = useState([]);
+
 	// состояние загрузки прелодера
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -81,7 +75,6 @@ function App() {
 				}
 			})
 			.catch((err) => {
-				/* setIsInfoToolTipOpen(true); */
 				console.log(err);
 			});
 	};
@@ -92,12 +85,11 @@ function App() {
 			.login(email, password)
 			.then((res) => {
 				setIsLoggedIn(true);
-				// setCurrentUser(res);
+				setCurrentUser(res);
 				navigate("/movies");
 				console.log(res);
 			})
 			.catch((err) => {
-				//setIsInfoToolTipOpen(true);
 				console.log(err);
 			});
 	};
@@ -109,12 +101,26 @@ function App() {
 			.then(() => {
 				setIsLoggedIn(false);
 				navigate("/");
-				localStorage.clear();
 			})
 			.catch((err) => {
 				console.log(err);
+			})
+			.finally(() => {
+				localStorage.clear();
 			});
 	};
+
+	// редактирование данных о пользователе
+	function handleUpdateUser(data) {
+		mainApi
+			.changeUserInfo(data)
+			.then((res) => {
+				setCurrentUser(res);
+			})
+			.catch((error) => {
+				console.log(`Ошибка: ${error}`);
+			});
+	}
 
 	// функции открытия/закрытия панели навигации
 	const handleNavClick = () => {
@@ -125,42 +131,35 @@ function App() {
 		setIsNavOpen(false);
 	};
 
-	// получем фильмы с api
-	const getAllMovies = () => {
-		moviesApi
-			.getMovies()
-			.then((res) => {
-				setAreMoviesLoading(true);
-				setFoundMovies(res);
-				// setIsLoading(true);
-			})
-			.catch((err) => {
-				console.log(err);
-				// setIsLoading(false);
-			})
-			.finally(() => {
-				setAreMoviesLoading(false);
-			});
-	};
-
-	// console.log(foundMovies);
-
-	// поиск по фильмам в зависимости от наличия данных в хранлилище
+	// поиск по фильмам
 	const handleFindMovies = (searchTerm) => {
 		if (foundMovies.length === 0) {
-			const initialMovies = getAllMovies();
-			const movies = findMovies(initialMovies, searchTerm.movie);
-			if (movies.length === 0) {
-				setNotFound(true);
-			} else {
-				setFilteredMovies(movies);
-			}
+			moviesApi
+				.getMovies()
+				.then((res) => {
+					setAreMoviesLoading(true);
+					setFoundMovies(res);
+					const movies = findMovies(res, searchTerm);
+					if (movies.length === 0) {
+						setNotFound(true);
+					} else {
+						setFilteredMovies(movies);
+						setNotFound(false);
+					}
+				})
+				.catch((err) => {
+					console.log(err);
+				})
+				.finally(() => {
+					setAreMoviesLoading(false);
+				})
 		} else {
-			const movies = findMovies(foundMovies, searchTerm.movie);
+			const movies = findMovies(foundMovies, searchTerm);
 			if (movies.length === 0) {
 				setNotFound(true);
 			} else {
 				setFilteredMovies(movies);
+				setNotFound(false);
 			}
 		}
 	};
@@ -200,7 +199,12 @@ function App() {
 
 	// поиск по сохраненным фильмам
 	const findSavedMovies = (searchTerm) => {
-		setFilteredSavedMovies(findMovies(foundMovies, searchTerm.movie));
+		const result = findMovies(savedMovies, searchTerm.movie);
+		if (result.length === 0) {
+			setFilteredSavedMovies([]);
+		} else {
+			setFilteredSavedMovies(result);
+		}
 	};
 
 	// функция проверки токена
@@ -291,12 +295,18 @@ function App() {
 										movies={savedMovies}
 										savedMovies={savedMovies}
 										onFindSavedMovies={findSavedMovies}
+										filteredSavedMovies={filteredSavedMovies}
 									></SavedMovies>
 								}
 							/>
 							<Route
 								path="profile"
-								element={<Profile onSignOut={handleSignOut} />}
+								element={
+									<Profile
+										onSignOut={handleSignOut}
+										onEditProfile={handleUpdateUser}
+									/>
+								}
 							></Route>
 						</Route>
 					</Route>
@@ -307,7 +317,7 @@ function App() {
 							<BasicLayout onNavOpen={handleNavClick} isLoggedIn={isLoggedIn} />
 						}
 					>
-						<Route index element={<Main />} />
+						<Route index element={<Main isLoggedIn={isLoggedIn} />} />
 					</Route>
 
 					<Route path="/" element={<AuthLayout />}>
