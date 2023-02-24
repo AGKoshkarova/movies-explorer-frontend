@@ -14,3 +14,5 @@
 Ссылка на сервер: https://api.diploma.koshkarova.nomoredomains.rocks/
 Ссылка на сайт: https://diploma.koshkarova.nomoredomains.rocks
 
+Ссылка на PullRequest: https://github.com/AGKoshkarova/movies-explorer-frontend/pull/2
+
