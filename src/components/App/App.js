@@ -23,9 +23,8 @@ import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 
 import { useLocalStorage } from "../../utils/useLocalStorage";
-import { moviesApi } from "../../utils/MoviesApi";
 
-import { findMovies } from "../../utils/findMovies";
+import { moviesApi } from "../../utils/MoviesApi";
 
 function App() {
 	// стейт юзера
@@ -130,6 +129,30 @@ function App() {
 		setIsNavOpen(false);
 	};
 
+	// фильтрация фильмов
+	const filterMovies = (movies, searchTerm) => {
+		return movies
+			.map((movie) => {
+				let searchedMovies = [];
+	
+				for (const [key, value] of Object.entries(movie)) {
+					if (
+						key === "nameRU" ||
+						key === "nameEN" ||
+						key === "director" ||
+						key === "country" ||
+						key === "description" ||
+						key === "year"
+					) {
+						searchedMovies.push(value.toLowerCase().includes(searchTerm.toLowerCase()));
+					}
+				}
+	
+				return searchedMovies.includes(true) ? movie : null;
+			})
+			.filter((element) => element !== null);
+	};
+
 	// поиск по фильмам
 	const handleFindMovies = (searchTerm) => {
 		if (foundMovies.length === 0) {
@@ -138,7 +161,7 @@ function App() {
 				.then((res) => {
 					setAreMoviesLoading(true);
 					setFoundMovies(res);
-					const movies = findMovies(res, searchTerm);
+					const movies = filterMovies(res, searchTerm);
 					if (movies.length === 0) {
 						setNotFound(true);
 					} else {
@@ -153,7 +176,7 @@ function App() {
 					setAreMoviesLoading(false);
 				})
 		} else {
-			const movies = findMovies(foundMovies, searchTerm);
+			const movies = filterMovies(foundMovies, searchTerm);
 			if (movies.length === 0) {
 				setNotFound(true);
 			} else {
@@ -198,7 +221,7 @@ function App() {
 
 	// поиск по сохраненным фильмам
 	const findSavedMovies = (searchTerm) => {
-		const result = findMovies(savedMovies, searchTerm.movie);
+		const result = filterMovies(savedMovies, searchTerm.movie);
 		if (result.length === 0) {
 			setFilteredSavedMovies([]);
 		} else {
