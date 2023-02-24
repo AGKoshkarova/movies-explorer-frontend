@@ -13,3 +13,6 @@
 
 Ссылка на сервер: https://api.diploma.koshkarova.nomoredomains.rocks/
 Ссылка на сайт: https://diploma.koshkarova.nomoredomains.rocks
+
+Ссылка на пул-реквест: https://github.com/AGKoshkarova/movies-explorer-frontend/pull/3
+
