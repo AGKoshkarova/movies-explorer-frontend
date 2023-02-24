@@ -45,15 +45,23 @@ function MoviesCard(props) {
 
 	return (
 		<div className="movie">
-			<img
-				className="movie__image"
-				src={
-					!isOnSavedMovies
-						? `https://api.nomoreparties.co/${props.movie.image.url}`
-						: props.movie.image
-				}
-				alt={props.name}
-			/>
+			<a
+				className="movie__image-link"
+				href={props.movie.trailerLink}
+				target="_blank"
+				rel="noreferrer"
+				title="Посмотреть трейлер фильма"
+			>
+				<img
+					className="movie__image"
+					src={
+						!isOnSavedMovies
+							? `https://api.nomoreparties.co/${props.movie.image.url}`
+							: props.movie.image
+					}
+					alt={props.name}
+				/>
+			</a>
 			<div className="movie__container">
 				<h4 className="movie__name">{props.name}</h4>
 				<button
