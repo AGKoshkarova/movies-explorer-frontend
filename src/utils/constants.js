@@ -6,3 +6,5 @@ export const SCREEN_XLARGE = 1280;
 
 export const NAME_PATTERN = /^[a-zА-яё\-\s]{2,30}$/iu;
 export const EMAIL_PATTERN = /^[-.\w]+@([\w\-]+){2,}\.[\w\-]{2,}$/iu;
+
+export const SHORT_FILM = 40;

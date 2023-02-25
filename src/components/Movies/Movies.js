@@ -7,6 +7,8 @@ import { useLocalStorage } from "../../utils/useLocalStorage";
 
 import BadResults from "../BadResults/BadResults";
 
+import { SHORT_FILM } from "../../utils/constants";
+
 function Movies(props) {
 	const [checkedCheckBox, setCheckedCheckBox] = useLocalStorage(
 		"searchMoviesChecked",
@@ -31,7 +33,7 @@ function Movies(props) {
 
 	useEffect(() => {
 		if (checkedCheckBox) {
-			props.movies.filter((movie) => movie.duration <= 40);
+			props.movies.filter((movie) => movie.duration <= SHORT_FILM);
 		}
 	});
 

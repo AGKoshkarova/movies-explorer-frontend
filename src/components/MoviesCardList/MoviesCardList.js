@@ -6,6 +6,8 @@ import MoviesCard from "../MoviesCard/MoviesCard";
 
 import { useResize } from "../../utils/useResize";
 
+import { SHORT_FILM } from "../../utils/constants";
+
 function MoviesCardList(props) {
 	const location = useLocation();
 	const pathname = location.pathname;
@@ -25,7 +27,7 @@ function MoviesCardList(props) {
 
 	// фильтрация короткометражек
 	const filteredMovies = props.movies.filter((movie) =>
-		props.isChecked ? movie.duration <= 40 : movie
+		props.isChecked ? movie.duration <= SHORT_FILM : movie
 	);
 
 	// массив отображаемых фильмов

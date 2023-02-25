@@ -4,7 +4,6 @@ import { useFormWithValidation } from "../../utils/useFormValidation";
 
 function Login(props) {
 	const formLogin = () => {
-		console.log("Callback function when form is submitted!");
 		console.log("Form Values ", values);
 		props.onLogin(values);
 	};

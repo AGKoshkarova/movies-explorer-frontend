@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
+import { SHORT_FILM } from "../../utils/constants";
 
 function SavedMovies(props) {
 	const [checkedCheckBox, setCheckedCheckBox] = useState(false);
@@ -25,7 +26,7 @@ function SavedMovies(props) {
 
 	useEffect(() => {
 		if (checkedCheckBox) {
-			props.savedMovies.filter((movie) => movie.duration <= 40);
+			props.savedMovies.filter((movie) => movie.duration <= SHORT_FILM);
 		}
 	});
 

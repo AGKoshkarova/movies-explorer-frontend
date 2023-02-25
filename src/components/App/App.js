@@ -15,6 +15,7 @@ import Navigation from "../Navigation/Navigation";
 import Profile from "../Profile/Profile";
 import NotFoundPage from "../NotFoundPage/NotFoundPage";
 import Preloader from "../Preloader/Preloader";
+import InfoToolTip from "../InfoToolTip/InfoToolTip";
 
 import { mainApi } from "../../utils/MainApi";
 
@@ -39,6 +40,9 @@ function App() {
 	// состояние логина
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+	// состояние изменения данных пользователя
+	const [isProfileChanged, setisProfileChanged] = useState(false);
+
 	// состояние нулевого резульата поиска
 	const [notFound, setNotFound] = useState(false);
 
@@ -60,6 +64,9 @@ function App() {
 	// состояние загрузки прелодера во время запроса к серверу с фильмами
 	const [areMoviesLoading, setAreMoviesLoading] = useState(false);
 
+	// состояние открытия/закрытия попапа об успешной регистрации
+	const [isInfoToolTipOpen, setIsInfoToolTipOpen] = useState(false);
+
 	//объект истории
 	const navigate = useNavigate();
 
@@ -69,12 +76,14 @@ function App() {
 			.register(name, email, password)
 			.then((res) => {
 				if (res) {
+					localStorage.clear();
 					setIsRegistered(true);
 					handleLogin({ email, password });
 				}
 			})
 			.catch((err) => {
 				console.log(err);
+				setIsInfoToolTipOpen(true);
 			});
 	};
 
@@ -85,11 +94,13 @@ function App() {
 			.then((res) => {
 				setIsLoggedIn(true);
 				setCurrentUser(res);
+				setIsInfoToolTipOpen(true);
 				navigate("/movies");
 				console.log(res);
 			})
 			.catch((err) => {
 				console.log(err);
+				setIsInfoToolTipOpen(true);
 			});
 	};
 
@@ -101,11 +112,11 @@ function App() {
 				localStorage.clear();
 				navigate("/");
 				setIsLoggedIn(false);
-				setFilteredMovies([])
+				setFilteredMovies([]);
 			})
 			.catch((err) => {
 				console.log(err);
-			})
+			});
 	};
 
 	// редактирование данных о пользователе
@@ -113,10 +124,16 @@ function App() {
 		mainApi
 			.changeUserInfo(data)
 			.then((res) => {
-				setCurrentUser(res);
+				if (res) {
+					setisProfileChanged(true);
+					setCurrentUser(res);
+					setIsInfoToolTipOpen(true);
+				}
 			})
-			.catch((error) => {
-				console.log(`Ошибка: ${error}`);
+			.catch((err) => {
+				console.log(`Ошибка: ${err}`);
+				setisProfileChanged(false);
+				setIsInfoToolTipOpen(true);
 			});
 	}
 
@@ -129,12 +146,17 @@ function App() {
 		setIsNavOpen(false);
 	};
 
+	// закрытие попапа об успешно запросе
+	const closePopup = () => {
+		setIsInfoToolTipOpen(false);
+	};
+
 	// фильтрация фильмов
 	const filterMovies = (movies, searchTerm) => {
 		return movies
 			.map((movie) => {
 				let searchedMovies = [];
-	
+
 				for (const [key, value] of Object.entries(movie)) {
 					if (
 						key === "nameRU" ||
@@ -144,10 +166,12 @@ function App() {
 						key === "description" ||
 						key === "year"
 					) {
-						searchedMovies.push(value.toLowerCase().includes(searchTerm.toLowerCase()));
+						searchedMovies.push(
+							value.toLowerCase().includes(searchTerm.toLowerCase())
+						);
 					}
 				}
-	
+
 				return searchedMovies.includes(true) ? movie : null;
 			})
 			.filter((element) => element !== null);
@@ -174,7 +198,7 @@ function App() {
 				})
 				.finally(() => {
 					setAreMoviesLoading(false);
-				})
+				});
 		} else {
 			const movies = filterMovies(foundMovies, searchTerm);
 			if (movies.length === 0) {
@@ -220,8 +244,8 @@ function App() {
 	};
 
 	// поиск по сохраненным фильмам
-	const findSavedMovies = (searchTerm) => {
-		const result = filterMovies(savedMovies, searchTerm.movie);
+	const handleFindSavedMovies = (searchTerm) => {
+		const result = filterMovies(savedMovies, searchTerm);
 		if (result.length === 0) {
 			setFilteredSavedMovies([]);
 		} else {
@@ -281,7 +305,7 @@ function App() {
 	}
 
 	return (
-		<CurrentUserContext.Provider value={currentUser}>
+		 <CurrentUserContext.Provider value={currentUser}>
 			<div className="page">
 				<Routes>
 					<Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
@@ -316,7 +340,7 @@ function App() {
 										onDelete={handleDeleteMovie}
 										movies={savedMovies}
 										savedMovies={savedMovies}
-										onFindSavedMovies={findSavedMovies}
+										onFindSavedMovies={handleFindSavedMovies}
 										filteredSavedMovies={filteredSavedMovies}
 									></SavedMovies>
 								}
@@ -346,15 +370,24 @@ function App() {
 						<Route
 							path="signup"
 							element={
+								!isLoggedIn ?
 								<Register
 									isRegistered={isRegistered}
 									onRegister={handleRegister}
-								></Register>
+								/>
+								: <ProtectedRoute />
 							}
 						/>
+
 						<Route
 							path="signin"
-							element={<Login onLogin={handleLogin} isLoogedIn={isLoggedIn} />}
+							element={
+								!isLoggedIn ? (
+									<Login onLogin={handleLogin} isLoogedIn={isLoggedIn} />
+								) : (
+									<ProtectedRoute />
+								)
+							}
 						/>
 					</Route>
 
@@ -362,6 +395,14 @@ function App() {
 				</Routes>
 
 				<Navigation isOpen={isNavOpen} onClose={closeNav}></Navigation>
+
+				<InfoToolTip
+					isOpen={isInfoToolTipOpen}
+					isLoggedIn={isLoggedIn}
+					isRegistered={isRegistered}
+					isProfileChanged={isProfileChanged}
+					onClose={closePopup}
+				></InfoToolTip>
 			</div>
 		</CurrentUserContext.Provider>
 	);

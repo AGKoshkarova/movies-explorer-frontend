@@ -1,5 +1,5 @@
 // компонент страницы изменения профиля.
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
@@ -12,6 +12,13 @@ function Profile(props) {
 
 	const [name, setName] = useState(currentUser.name);
 	const [email, setEmail] = useState(currentUser.email);
+
+	const [isNameValid, setIsNameValid] = useState(false);
+	const [isEmailValid, setIsEmailValid] = useState(false);
+
+	const [isNameFocused, setIsNameFocused] = useState(false);
+	const [isEmailFocused, setIsEmailFocused] = useState(false);
+
 	const [errors, setErrors] = useState({});
 	const [isValid, setIsValid] = useState(false);
 
@@ -22,6 +29,9 @@ function Profile(props) {
 			email,
 		};
 		props.onEditProfile(userData);
+		setIsValid(false);
+		setIsNameFocused(false);
+		setIsEmailFocused(false);
 	}
 
 	const handleNameChange = (evt) => {
@@ -30,9 +40,7 @@ function Profile(props) {
 
 		setName(evt.target.value);
 		validate(evt, name, value);
-		if (Object.keys(errors).length === 0) {
-			setIsValid(true);
-		}
+		setIsNameFocused(true);
 	};
 
 	const handleEmailChange = (evt) => {
@@ -41,10 +49,15 @@ function Profile(props) {
 
 		setEmail(evt.target.value);
 		validate(evt, name, value);
+		setIsEmailFocused(true);
+	};
 
-		if (Object.keys(errors).length === 0) {
-			setIsValid(true);
-		}
+	const handleNameFocus = (evt) => {
+		setIsNameFocused(evt.target.name);
+	};
+
+	const handleEmailFocus = (evt) => {
+		setIsEmailFocused(evt.target.name);
 	};
 
 	const handleSignOut = () => {
@@ -66,6 +79,7 @@ function Profile(props) {
 				} else {
 					let newObj = omit(errors, "name");
 					setErrors(newObj);
+					setIsNameValid(true);
 				}
 				return;
 
@@ -78,6 +92,7 @@ function Profile(props) {
 				} else {
 					let newObj = omit(errors, "email");
 					setErrors(newObj);
+					setIsEmailValid(true);
 				}
 				return;
 
@@ -85,6 +100,32 @@ function Profile(props) {
 				return;
 		}
 	};
+
+	useEffect(() => {
+		if (!isEmailFocused && isNameValid && name !== currentUser.name) {
+			setIsValid(true);
+		} else if (!isNameFocused && isEmailValid && email !== currentUser.email) {
+			setIsValid(true);
+		} else if (
+			isEmailValid &&
+			isNameValid &&
+			name !== currentUser.name &&
+			email !== currentUser.email
+		) {
+			setIsValid(true);
+		} else {
+			setIsValid(false);
+		}
+	}, [
+		isEmailValid,
+		isNameValid,
+		isEmailFocused,
+		isNameFocused,
+		currentUser.email,
+		currentUser.name,
+		email,
+		name,
+	]);
 
 	return (
 		<div className="profile">
@@ -96,6 +137,7 @@ function Profile(props) {
 						className="profile__input profile__input_type_name"
 						value={name || ""}
 						onChange={handleNameChange}
+						onFocus={handleNameFocus}
 						id="name-input"
 						type="text"
 						name="name"
@@ -114,6 +156,7 @@ function Profile(props) {
 						className="profile__input profile__input_type_email"
 						value={email || ""}
 						onChange={handleEmailChange}
+						onFocus={handleEmailFocus}
 						required
 						id="email-input"
 						type="email"
