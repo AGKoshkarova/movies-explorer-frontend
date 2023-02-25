@@ -3,7 +3,44 @@
 // Для него можно воспользоваться отдельным управляемым компонентом FilterCheckbox.
 import FilterCheckbox from "../FilterCheckBox/FilterCheckBox";
 
-function SearchForm() {
+import { useLocalStorage } from "../../utils/useLocalStorage";
+
+import { useState } from "react";
+
+import { useLocation } from "react-router-dom";
+
+function SearchForm(props) {
+	const location = useLocation();
+	const pathname = location.pathname;
+
+	const isOnSavedMovies = pathname === "/saved-movies";
+
+	// инпут Movies
+	const [searchInputMovies, setSearchInputMovies] = useLocalStorage(
+		"searchInput",
+		""
+	);
+
+	// инпут SavedMovies
+	const [searchInputSavedMovies, setSearchInputSavedMovies] = useState("");
+
+	const handleSavedMoviesSubmit = (evt) => {
+		evt.preventDefault();
+		props.onSubmit(searchInputSavedMovies);
+	};
+
+	const handleMoviesSubmit = (evt) => {
+		evt.preventDefault();
+		props.onSubmit(searchInputMovies);
+	};
+
+	const handleInputMoviesChange = (evt) => {
+		setSearchInputMovies(evt.target.value);
+	};
+
+	const handleInputSavedMoviesChange = (evt) => {
+		setSearchInputSavedMovies(evt.target.value);
+	};
 
 	return (
 		<div className="search-form">
@@ -11,6 +48,9 @@ function SearchForm() {
 				<form
 					className="search-form__form"
 					name="movies-form"
+					onSubmit={
+						isOnSavedMovies ? handleSavedMoviesSubmit : handleMoviesSubmit
+					}
 				>
 					<input
 						className="search-form__input"
@@ -18,14 +58,25 @@ function SearchForm() {
 						type="text"
 						name="movie"
 						placeholder="Фильм"
-						/* value={movie || ""} */
+						value={
+							isOnSavedMovies ? searchInputSavedMovies : searchInputMovies || ""
+						}
 						autoComplete="off"
 						required
+						onChange={
+							isOnSavedMovies
+								? handleInputSavedMoviesChange
+								: handleInputMoviesChange
+						}
 					></input>
 					<button className="search-form__btn" type="submit"></button>
 				</form>
 			</div>
-			<FilterCheckbox />
+			<FilterCheckbox
+				id={pathname === "/movies" ? "movies" : "saved-movies"}
+				checkedCheckBox={props.checkedCheckBox}
+				setCheckedCheckBox={props.setCheckedCheckBox}
+			/>
 		</div>
 	);
 }

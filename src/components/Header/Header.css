@@ -13,6 +13,10 @@
     background-color: white;
 }
 
+.header_type_main-loggedIn {
+    background-color: #f3c1f8;
+}
+
 /*container*/
 .header__container {
     display: flex;
@@ -203,21 +207,6 @@
     }
 }
 
-/*button*/
-
-/* .header__profile_btn {
-    outline: none;
-    border: none;
-    cursor: pointer;
-    background-color: #F9F9F9;
-    border-radius: 4px;
-    background-image: url(../../images/profile_icon.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-    height: 30px;
-    width: 26px;
-} */
-
 /*nav-btn*/
 
 .header__nav-btn {
@@ -231,6 +220,30 @@
 
 .header__nav-btn_type_main {
     display: none;
+}
+
+.header__nav-btn_type_main-loggedIn {
+    background-image: url(../../images/nav_btn.svg);
+    background-repeat: no-repeat;
+    width: 44px;
+    height: 44px;
+    background-position: center;
+    border: none;
+    background-color: #f3c1f8;
+    cursor: pointer;
+    outline: none;
+}
+
+@media screen and (min-width: 320px) {
+    .header__nav-btn_type_main-loggedIn {
+        display: inline;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .header__nav-btn_type_main-loggedIn {
+        display: none;
+    }
 }
 
 .header__nav-btn_type_movies {
@@ -263,4 +276,8 @@
     background-color: rgba(249, 249, 249, 1);
     padding: 8px 7.25px;
     border-radius: 4px;
+}
+
+.header__profile-icon_type_main-loggedIn {
+    background-color: #f3c1f8;
 }

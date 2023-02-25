@@ -1,29 +1,63 @@
-// компонент страницы с поиском по фильмам. В нём пригодятся эти компоненты:
+import { useEffect } from "react";
 
-// SearchForm — форма поиска, куда пользователь будет вводить запрос.
-// Обратите внимание на фильтр с чекбоксом «Только короткометражки».
-// Для него можно воспользоваться отдельным управляемым компонентом FilterCheckbox.
-
-// Preloader — отвечает за работу прелоадера.
-// MoviesCardList — компонент, который управляет отрисовкой карточек фильмов на страницу и их количеством.
-// MoviesCard — компонент одной карточки фильма.
-
-import { movies } from "../../utils/movies";
-
-import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
+import MoviesCardList from "../MoviesCardList/MoviesCardList";
+
+import { useLocalStorage } from "../../utils/useLocalStorage";
+
+import BadResults from "../BadResults/BadResults";
+
+import { SHORT_FILM } from "../../utils/constants";
 
 function Movies(props) {
+	const [checkedCheckBox, setCheckedCheckBox] = useLocalStorage(
+		"searchMoviesChecked",
+		false
+	);
+
+	const handleFindMovies = (searchTerm) => {
+		props.onFindMovies(searchTerm);
+	};
+
+	const handleCheckLikeStatus = (data) => {
+		props.onCheckStatus(data);
+	};
+
+	const handleSaveMovie = (movie) => {
+		props.onSave(movie);
+	};
+
+	const handleDeleteMovie = (movie) => {
+		props.onDelete(movie);
+	};
+
+	useEffect(() => {
+		if (checkedCheckBox) {
+			props.movies.filter((movie) => movie.duration <= SHORT_FILM);
+		}
+	});
 
 	return (
 		<div className="movies">
-			<SearchForm />
-			<MoviesCardList movies={movies}/>
-			<div className="movies__btn-container">
-				<button className="movies__button" type="button">Ещё</button>
-			</div>
+			<SearchForm
+				onSubmit={handleFindMovies}
+				checkedCheckBox={checkedCheckBox}
+				setCheckedCheckBox={setCheckedCheckBox}
+			/>
+			{props.notFound ? (
+				<BadResults />
+			) : (
+				<MoviesCardList
+					movies={props.movies}
+					onCheckStatus={handleCheckLikeStatus}
+					onSave={handleSaveMovie}
+					savedMovies={props.savedMovies}
+					onDelete={handleDeleteMovie}
+					isChecked={checkedCheckBox}
+				/>
+			)}
 		</div>
 	);
-};
+}
 
 export default Movies;

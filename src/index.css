@@ -25,3 +25,5 @@
 @import url(../src/components/SavedMovies/SavedMovies.css);
 @import url(../src/components/SearchForm/SearchForm.css);
 @import url(../src/components/Techs/Techs.css);
+@import url(../src/components/BadResults/BadResults.css);
+@import url(../src/components/InfoToolTip/InfoToolTip.css);

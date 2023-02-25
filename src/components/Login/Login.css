@@ -1,3 +1,18 @@
 .auth__submit-btn_type_signin {
     margin-top: 179px;
 }
+
+.auth__submit-btn_type_signin_disabled {
+    cursor: pointer;
+    width: 100%;
+    padding: 15px 0;
+    text-align: center;
+    margin-top: 179px;
+    border-radius: 3px;
+    border: none;
+    outline: none;
+    transition: opacity 0.4s ease-in-out;
+    margin-top: 179px;
+    background-color: rgba(248, 248, 248, 1);
+    color: rgba(194, 194, 194, 1);
+}

@@ -1,54 +1,85 @@
-// компонент страницы регистрации.
 import { Link } from "react-router-dom";
 
-function Register() {
+import { useFormWithValidation } from "../../utils/useFormValidation";
+
+function Register(props) {
+	const handleFormRegister = () => {
+		console.log("Form Values ", values);
+		props.onRegister(values);
+	};
+
+	const { values, handleChange, errors, handleSubmit, isValid } =
+		useFormWithValidation(handleFormRegister);
+
+	const buttonClassName = isValid
+		? "auth__submit-btn auth__submit-btn_type_signup"
+		: "auth__submit-btn auth__submit-btn_disabled";
+
 	return (
 		<div className="auth">
-			<Link to ='/' className="auth__logo logo"></Link>
+			<Link to="/" className="auth__logo logo"></Link>
 			<h2 className="auth__title">Добро пожаловать!</h2>
-			<form className="auth__form" name="signup">
+			<form
+				className="auth__form"
+				name="signup"
+				onSubmit={handleSubmit}
+				noValidate
+			>
 				<label className="auth__input-label">Имя</label>
 				<input
-					className="auth__input"
-					id="name-input"
+					className="auth__input auth__input_invalid"
+					id="user-input"
 					type="text"
 					name="name"
 					placeholder="Имя"
-					/* value={email || ""} */
+					value={values.name || ""}
 					autoComplete="off"
 					required
-					/* onChange={handleEmailChange} */
+					onChange={handleChange}
 				/>
+				{errors.name && (
+					<span className="auth__error auth__error_type_name">
+						{errors.name}
+					</span>
+				)}
 				<label className="auth__input-label">E-mail</label>
 				<input
-					className="auth__input"
+					className="auth__input auth__input_invalid"
 					id="email-input"
 					type="email"
 					name="email"
 					placeholder="Email"
-					/* value={email || ""} */
+					value={values.email || ""}
 					autoComplete="off"
 					required
-					/* onChange={handleEmailChange} */
+					onChange={handleChange}
 				/>
-				<span className="auth__input-error"></span>
+				{errors.email && (
+					<span className="auth__error auth__error_type_email">
+						{errors.email}
+					</span>
+				)}
 				<label className="auth__input-label">Пароль</label>
 				<input
-					className="auth__input"
+					className="auth__input auth__input_invalid"
 					id="password-input"
 					type="password"
 					name="password"
 					placeholder="Пароль"
-					/* value={password || ""} */
+					value={values.password || ""}
 					autoComplete="off"
 					required
-					/* onChange={handlePasswordChange} */
+					onChange={handleChange}
 				/>
-				<span className="auth__input-error password-input-error"></span>
+				{errors.password && (
+					<span className="auth__error auth__error_type_password">
+						{errors.password}
+					</span>
+				)}
 				<button
-					className="auth__submit-btn auth__submit-btn_type_signup auth__submit-btn_disabled"
+					className={buttonClassName}
 					type="submit"
-					disabled=""
+					disabled={isValid ? "" : true}
 				>
 					Зарегистрироваться
 				</button>

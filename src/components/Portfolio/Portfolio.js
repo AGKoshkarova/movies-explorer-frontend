@@ -1,4 +1,3 @@
-// компонент со ссылками на другие проекты.
 import linkIcon from "../../images/link_icon.svg";
 
 function Portfolio() {

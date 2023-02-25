@@ -94,6 +94,10 @@
     margin: 0;
 }
 
+.profile__input:invalid {
+    color: rgba(255, 64, 98, 1);
+}
+
 /*btn-container*/
 
 .profile__btn-container {
@@ -138,4 +142,25 @@
 
 .profile__btn_type_logout {
     color: rgba(255, 64, 98, 1);
+}
+
+.profile__btn_disabled {
+    opacity: 0.6;
+}
+
+/*error*/
+
+.profile__error {
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 12px;
+    letter-spacing: 0em;
+    text-align: right;
+    color: rgba(255, 64, 98, 1);
+    margin: 8px 0 5px;
+    align-self: flex-end;
+}
+
+.profile__error_type_name {
+    margin: 0 0 8px;
 }
